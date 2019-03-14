@@ -129,7 +129,7 @@ function boxZoom(box, centroid, paddingPerc) {
 }
 
 // on window resize
-$(window).resize(function() {
+window.resize(function() {
   // Resize SVG
   svg
     .attr("width", $("#map").width())
