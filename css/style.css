@@ -1,6 +1,6 @@
 /********************************************
 
-	Styles to be added to energy.gov in order 
+	Styles to be added to energy.gov in order
 	to allow it to look however you want it.
 	Reminder: make it responsive
 
@@ -18,3 +18,28 @@ Map
     height: 800px;
  }
  #map { position:absolute; top:0; height: 500px; width:100%;}
+
+/* #map-holder {
+  width: 100vw;
+  height: 100vh;
+}*/
+svg rect {
+  fill: #2A2C39;   /* map background colour */
+}
+.country{
+  fill: #d0d0d0;   /* country colour */
+  stroke: #2A2C39; /* country border colour */
+  stroke-width: 1; /* country border width */
+}
+.country-on {
+  fill: #4B5358;   /* highlight colour for selected country */
+}
+.countryLabel {
+  display: none;   /* hide all country labels by default */
+}
+.countryName {
+  fill: #FFFAFF;   /* country label text colour */
+}
+.countryLabelBg {
+  fill: #30BCED;   /* country label background colour */
+}
