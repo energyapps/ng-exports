@@ -152,7 +152,7 @@ var svg = d3
 
 // get map data
 d3.json(
-  "/data/world-topo.json", function(json) {
+  "data/world-topo.json", function(json) {
     //Bind data and create one path per GeoJSON feature
     countriesAll = svg.append("g").attr("id", "map");
     // add a background rectangle
