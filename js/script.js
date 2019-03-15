@@ -147,6 +147,7 @@ d3.json(
 	"data/world-topo.json",
 	function(json) {
 		console.log(json);
+		console.log("GEOMETRIES" + \r + json.world.geometries);
 		// return;
 		//Bind data and create one path per GeoJSON feature
 		countriesAll = svg.append("g").attr("id", "map");
@@ -161,22 +162,22 @@ d3.json(
 		// draw a path for each feature/country
 		world = countriesAll
 			.selectAll("path")
-			.data(json.geometries)
+			.data(json.world.geometries)
 			.enter()
 			.append("path")
 			.attr("d", path)
 			.attr("id", function(d, i) {
-				return "country" + d.properties.iso_a3;
+				return "country" + d.id;
 			})
 			.attr("class", "country")
 			//      .attr("stroke-width", 10)
 			//      .attr("stroke", "#ff0000")
 			// add a mouseover action to show name label for feature/country
 			.on("mouseover", function(d, i) {
-				d3.select("#countryLabel" + d.properties.iso_a3).style("display", "block");
+				d3.select("#countryLabel" + d.id).style("display", "block");
 			})
 			.on("mouseout", function(d, i) {
-				d3.select("#countryLabel" + d.properties.iso_a3).style("display", "none");
+				d3.select("#countryLabel" + d.id).style("display", "none");
 			})
 			// add an onclick action to zoom into clicked country
 			.on("click", function(d, i) {
@@ -188,12 +189,12 @@ d3.json(
 		// Use CSS to have class "countryLabel" initially hidden
 		worldLabels = countriesAll
 			.selectAll("g")
-			.data(json.features)
+			.data(json)
 			.enter()
 			.append("g")
 			.attr("class", "countryLabel")
 			.attr("id", function(d) {
-				return "countryLabel" + d.properties.iso_a3;
+				return "countryLabel" + d.world.geometries.id;
 			})
 			.attr("transform", function(d) {
 				return (
@@ -210,7 +211,7 @@ d3.json(
 			// add an onlcick action to zoom into clicked country
 			.on("click", function(d, i) {
 				d3.selectAll(".country").classed("country-on", false);
-				d3.select("#country" + d.properties.iso_a3).classed("country-on", true);
+				d3.select("#country" + d.world.geometries.id).classed("country-on", true);
 				boxZoom(path.bounds(d), path.centroid(d), 20);
 			});
 		// add the text to the label group showing country name
@@ -221,7 +222,7 @@ d3.json(
 			.attr("dx", 0)
 			.attr("dy", 0)
 			.text(function(d) {
-				return d.properties.name;
+				return d.world.geometries.properties.name;
 			})
 			.call(getTextBox);
 		// add a background rectangle the same size as the text
