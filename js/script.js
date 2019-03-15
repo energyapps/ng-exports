@@ -129,7 +129,8 @@ function boxZoom(box, centroid, paddingPerc) {
 }
 
 // on window resize
-window.resize(function() {
+$(window).resize(function() {
+	console.log("resized");
   // Resize SVG
   svg
     .attr("width", $("#map").width())
@@ -166,7 +167,7 @@ d3.json(
     // draw a path for each feature/country
     world = countriesAll
       .selectAll("path")
-      .data(json.features)
+      .data(json.geometries)
       .enter()
       .append("path")
       .attr("d", path)
