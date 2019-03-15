@@ -147,7 +147,7 @@ d3.json(
 	"data/world-topo.json",
 	function(json) {
 		console.log(json);
-		console.log("GEOMETRIES" + \r + json.world.geometries);
+		console.log("GEOMETRIES: \r" + json.world.geometries);
 		// return;
 		//Bind data and create one path per GeoJSON feature
 		countriesAll = svg.append("g").attr("id", "map");
