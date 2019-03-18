@@ -10,38 +10,534 @@
 /*+++++++++++++++++++++++++++
 Map
 ++++++++++++++++++++++++++++++++++++++*/
- #master_container {
- 	font-family: 'Avenir LT W02 35 Light',verdana,sans-serif;
-    text-transform: none !important;
-    position: relative;
-    width: 100%;
-    height: 800px;
- }
-
- #map {
- 	position: absolute;
- 	top: 0;
- 	height: 500px;
- 	width: 100%;
- }
-
-svg rect {
-  fill: #DDDDDD;   /* map background colour */
+#dis1 {
+	background-color: rgb(221,221,221);
+    /*position: absolute;
+    */
 }
-.country{
-  fill: #FFFFFF;   /* country colour */
-  stroke: #212E40; /* country border colour */
-  stroke-width: 1; /* country border width */
+
+#master_container {
+	font-family: 'Avenir LT W02 35 Light',verdana,sans-serif;
+	text-transform: none !important;
+	position: relative;
+	height: 800px;
+	position: relative;
+	font-size: 12px;
+	background-color: #dddddd;
+	margin: 0;
+	padding-bottom: 55%;
+	width: 100%;
+	max-width: 1000px;
+	overflow: visible;
+	clear: both;
 }
+/*
+#sidebar-right{
+    display:none !important;
+}
+
+.sidebar-second#main-content{
+    width:100% !important;
+}*/
+
+/******************************** FALLBACK IMAGE ********************************/
+.fallback {
+	display: none;
+}
+
+.fallinner {
+    height: 40px !important;
+}
+
+/******************************** TEXT ********************************/
+#dis1 h1, #dis1 h2, #dis1 h3, #dis1 h4, #dis1 p {
+	border-bottom: none !important;
+	color:#333;
+    /* padding: 0px !important;
+	margin: 0px !important;
+    */
+}
+
+#pre_content,#post_content {
+	background-color:#ddd;
+}
+
+#pre_content h2 {
+	font-size: 30px;
+	padding-top: 5px;
+	padding-left: 5px;
+	color:#333;
+	line-height: 30px;
+}
+
+#pre_content h3 {
+	font-size: 20px;
+	padding-top: 5px;
+	padding-left: 5px;
+	color:#333;
+	line-height: 20px;
+}
+
+#pre_content p {
+	font-size: 14px;
+	padding-top: 5px;
+	padding-left: 5px;
+	color:#333;
+	line-height: 14px;
+	margin: 0px;
+	padding-bottom: 0px !important;
+	border-bottom: none !important;
+	margin-bottom: 0px !important;
+}
+
+#post_content {
+	position: relative;
+	width:60%;
+	font-size: 10px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	color: rgb(100,100,100);
+	line-height: 12px;
+	margin: 0px;
+	padding-bottom: 0px !important;
+	border-bottom: none !important;
+	margin-bottom: 0px !important;
+}
+
+#attribution {
+	position: absolute;
+	bottom: -20px;
+	padding-left: 5px;
+	border-bottom: none !important;
+	color:#333 !important;
+}
+
+/******************************** MAP ********************************/
+#map {
+	position: absolute;
+	top: 0;
+	height: 500px;
+	width: 100%;
+}
+
+.country {
+	fill:#FFFFFF;
+    /* country colour */
+	stroke:#212E40;
+    /* country border colour */
+	stroke-width: 1;
+    /* country border width */
+}
+
 .country-on {
-  fill: #2E4159;   /* highlight colour for selected country */
+	fill:#2E4159;
+    /* highlight colour for selected country */
 }
+
 .countryLabel {
-  display: none;   /* hide all country labels by default */
+	display: none;
+    /* hide all country labels by default */
 }
+
 .countryName {
-  fill: #FFFAFF;   /* country label text colour */
+	fill:#FFFAFF;
+    /* country label text colour */
 }
+
 .countryLabelBg {
-  fill: #30BCED;   /* country label background colour */
+	fill:#30BCED;
+    /* country label background colour */
+}
+
+.green {
+	color:#19A9E2;
+}
+
+/******************************** LEGEND ********************************/
+#legend-content {
+	position: relative;
+	width: 50%;
+	height: 60px;
+	background-color: rgb(221,221,221);
+	float: left;
+}
+
+.my-legend .legend-title {
+	text-align: left;
+	font-size: 14px;
+	padding-top: 5px;
+    /*float: right;
+    */
+	color:#444;
+	font-family:'Avenir LT W02 35 Light';
+	padding-left: 11px;
+}
+
+.my-legend .legend-scale ul {
+	margin: 0;
+	padding: 0;
+	float: left;
+	list-style: none;
+    /*position: relative;
+    */
+    /*width: 100%;
+    */
+	display: block;
+	padding-left: 10px;
+}
+
+.my-legend .legend-scale ul li {
+	display: block;
+	font-family: "Avenir LT W02 35 Light",verdana,sans-serif;
+	float: left;
+	width: 50px;
+	text-align: center;
+    /*font-size: 80%;
+    */
+	list-style: none;
+	color:#444;
+	font-size: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	background-color: rgb(242,242,242);
+	border-left: 1px solid#fff;
+	border-bottom: 1px solid#fff;
+	border-top: 1px solid#fff;
+	cursor: pointer;
+    /*transition: background-color 100ms ease-out;
+    */
+}
+
+.my-legend .legend-scale ul li:hover {
+	background-color: rgb(184,223,101);
+    /*transition: background-color 100ms ease-out;
+    */
+}
+
+.my-legend .legend-scale ul li.activea {
+	background-color: rgb(184,223,101);
+    /*transition: background-color 100ms ease-out;
+    */
+}
+
+.my-legend .legend-scale ul li:last-child {
+	border-right: 1px solid#fff;
+}
+
+.my-legend ul.legend-labels li span {
+	display: block;
+	float: right;
+	height: 100%;
+	width: 100%;
+    /*border-left: 2px solid#fff;
+    */
+    /*margin-bottom: 5px;
+    */
+}
+
+.my-legend .legend-scale ul li img {
+	padding-top: 4px;
+	height: 21px;
+	width: 21px;
+}
+
+.my-legend a {
+	color:#777;
+}
+
+.my-legend {
+	width: 100%;
+}
+
+.buttonsi {
+	padding: 0 !important;
+}
+
+.buttonsi:hover {
+	background-color: rgb(242,242,242) !important;
+}
+
+
+/* D3 stuff */
+ .state {
+    fill:#fff;
+}
+/*.state.MN {
+	fill:#aad;
+}
+
+.state.MO {
+	fill:#daa;
+}
+
+.state.MI {
+	fill:#dad;
+}
+
+.state.MS {
+	fill:#ada;
+}
+*/
+ .state-boundary {
+	fill: none;
+	stroke:#eee;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	stroke-width: 2px;
+}
+
+.bubbles, .bubbles2, .bubbles3 {
+	fill-opacity: .5;
+	stroke:#333;
+	stroke-width: .5px;
+    /*fill:#cdd;
+    */
+	fill:#ffb732;
+}
+
+.bubbles :hover, .bubbles2 :hover, .bubbles3 :hover {
+	stroke:#ffb732;
+	stroke-width: 3px;
+    /*fill:#ff5614;
+    */
+	cursor: pointer;
+}
+
+.posB {
+	fill:#ffb732;
+}
+
+.negB {
+	fill:#ADD8E6;
+}
+
+.legend circle {
+	fill: none;
+	stroke:#fff;
+}
+
+.legend text {
+	fill:#777;
+	font: 10px sans-serif;
+	text-anchor: middle;
+}
+
+#tooltip {
+	line-height: 1;
+	font-weight: bold;
+	padding: 12px;
+	fill:#fff;
+	fill-opacity: 0.8;
+	border-radius: 2px;
+	stroke-width: 1px;
+	stroke:#333;
+}
+
+#slideBox,#slider, .sly1 {
+	line-height: 1;
+	font-weight: bold;
+	padding: 12px;
+	fill:#fff;
+	fill-opacity: 0.9;
+    /*border-radius: 2px;
+	stroke-width: 1px;
+	stroke:#333;
+    */
+}
+
+#slideBox {
+}
+
+.tip-text {
+	fill:#333;
+	font-size: 16px;
+	font-family: "Avenir LT W02 85 Heavy",verdana,sans-serif;
+	text-anchor: middle;
+	letter-spacing: 1px;
+}
+
+.tip-text2 {
+	fill:#333;
+	font-size: 14px;
+	font-family: "Avenir LT W02 35 Light",verdana,sans-serif;
+	text-anchor: middle;
+}
+
+.tip-text3 {
+	fill:#333;
+	font-size: 14px;
+	font-family: "Avenir LT W02 35 Light",verdana,sans-serif;
+	text-anchor: middle;
+}
+
+.closer {
+	cursor: pointer;
+}
+
+.closer :hover {
+	font-family: "Avenir LT W02 85 Heavy",verdana,sans-serif !important;
+}
+
+.arc {
+	fill-opacity: 0.6;
+}
+
+.arc path {
+	stroke:#fff;
+}
+
+.arc path :hover {
+	cursor: pointer;
+}
+
+.arc :hover {
+	cursor: pointer;
+	fill-opacity: 0.8;
+}
+/*selector*/
+#selectBox {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	background-color:#ddd;
+}
+
+#totalDiv {
+	background-color: rgb(221,221,221);
+	float: right;
+	width: 50%;
+	height: 75px;
+	text-align: right;
+}
+
+#totalDiv h2 {
+	font-size: 20px;
+	padding-top: 5px;
+	padding-right: 5px;
+	color:#333;
+	line-height: 30px;
+}
+
+#totalDiv h3 {
+	font-size: 30px;
+	padding-top: 5px;
+	padding-right: 5px;
+	color:#333;
+	line-height: 14px;
+	margin: 0px;
+	padding-bottom: 0px !important;
+	border-bottom: none !important;
+	margin-bottom: 0px !important;
+}
+
+#totalDiv h4 {
+	padding-top: 5px;
+	padding-right: 5px;
+	color:#333;
+	padding-bottom: 0px !important;
+	border-bottom: none !important;
+	margin-bottom: 0px !important;
+}
+/*Repeater*/
+#repeater,#fastforward,#rewind {
+	cursor: pointer;
+	stroke:#fff;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	stroke-width: 1px;
+}
+
+
+/*Responsive*/
+ @media (max-width:900px){
+	#master_container {
+	    padding-bottom:58% !important;
+    }
+	#totalDiv,#legend-content {
+	    width: 100%;
+    }
+}
+
+.media (max-width:870px){
+	#fold img{
+	    bottom: -35px;
+    }
+}
+
+.media (max-width:800px){
+	#master_container {
+	    padding-bottom:65% !important;
+    }
+}
+
+.media (max-width:700px){
+	#master_container {
+	    padding-bottom:65% !important;
+    }
+}
+
+.media (max-width:570px){
+    /*#master_container {
+	    padding-bottom:55% !important;
+    }
+
+.  */
+	#totalDiv h3 {
+	    font-size: 15px;
+	    line-height: 100%;
+    }
+	#totalDiv h2 {
+	    font-size: 16px;
+	    line-height: 100%;
+    }
+	#totalDiv h4 {
+	    font-size: 12px;
+	    line-height: 4px;
+    }
+	#pre_content h2 {
+	    font-size: 20px;
+	    padding-top: 5px;
+	    padding-left: 5px;
+	    line-height: 20px;
+    }
+	#post_content {
+	   width: 90%;
+    }
+	#fold img{
+	    display: none;
+    }
+}
+
+.media (max-width:480px){
+	#totalDiv {
+	    height: 40px;
+    }
+	#master_container {
+	    padding-bottom:70% !important;
+    }
+}
+
+.media (max-width:400px){
+    /******************************** Legend ********************************/
+	.my-legend .legend-title {
+	    font-size: 12px;
+	    padding-top: 5px;
+	    padding-left: 6px;
+    }
+	.my-legend .legend-scale ul {
+	    padding-left: 5px;
+    }
+	.my-legend .legend-scale ul li {
+	    width: 40px;
+	    font-size: 13px;
+	    padding-top: 3px;
+	    padding-bottom: 3px;
+    }
+	.my-legend .legend-scale ul li img {
+	    padding-top: 4px;
+	    height: 16px;
+    }
+	.buttonsi {
+	    padding: 0 !important;
+    }
 }
