@@ -176,10 +176,10 @@ d3.json(topoUrl,
 
 // highlight lng export countries
 d3.json(countriesUrl,
-	function(error, countries) {
+	function(error, expCountries) {
 		if (error) throw error;
 
-		console.log( countries.ARG );
+		console.log( expCountries );
 		// console.log("Export countries", d3.keys(lngExports));
 
 	    /*for (var i = 0; i < resources.length; i++) {
@@ -197,7 +197,7 @@ d3.json(countriesUrl,
 
 		countryLabels
 			.selectAll("g")
-			.data(countries)
+			.data(expCountries.countries)
 			.enter()
 			.append("g")
 			.attr("class", "countryLabel")
