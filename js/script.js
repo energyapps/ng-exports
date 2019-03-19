@@ -16,6 +16,8 @@ var w = parseInt(d3.select("#master_container").style("width")),
 // variables for catching min and max zoom factors
 var minZoom;
 var maxZoom;
+// variable for catching geojson
+var geojson;
 
 // DEFINE FUNCTIONS/OBJECTS
 // Define map projection
@@ -134,17 +136,122 @@ var svg = d3
 	.call(zoom);
 
 // get map data
-var dataUrl = "data/world-topo.json";
+var topoUrl = "data/world-topo.json"; // full world map
+var countriesUrl = "data/export-countries.json"; // list of export countries
 
-d3.json(dataUrl,
+// draw world map
+d3.json(topoUrl,
 	function(error, topology) {
 		if (error) throw error;
-		console.log("topojson", topology);
+		// console.log("topojson", topology);
 
-		var geojson = topojson.feature(topology, topology.objects.world);
-		console.log("geojson", geojson);
+		// populate geojson variable created on load
+		geojson = topojson.feature(topology, topology.objects.world);
+		// console.log("geojson", geojson);
 
 		//Bind data and create one path per GeoJSON feature
+		var countriesAll = svg.append("g").attr("id", "map");
+		// add a background rectangle
+		countriesAll
+			.append("rect")
+			.attr("x", 0)
+			.attr("y", 0)
+			.attr("width", w)
+			.attr("height", h);
+
+		// draw a path for each feature/country
+		var world = countriesAll
+			.selectAll("path")
+			.data(geojson.features)
+			.enter()
+			.append("path")
+			.attr("d", path)
+			.attr("id", function(d, i) {
+				return "country" + d.id;
+				console.log(d.id);
+			})
+			.attr("class", "country");
+	}
+);
+
+// highlight lng export countries
+d3.json(countriesUrl,
+	function(error, countries) {
+		if (error) throw error;
+
+		console.log( countries.ARG );
+		// console.log("Export countries", d3.keys(lngExports));
+
+	    /*for (var i = 0; i < resources.length; i++) {
+	        var obj = resources[i]
+	        for (var key in obj) {
+	            console.log(key+"="+obj[key]);
+	        }
+	    }   */
+
+		// console.log(countryNames);
+
+		// Add a label group to each feature/country. This will contain the country name and a background rectangle
+		// Use CSS to have class "countryLabel" initially hidden
+		var countryLabels = svg.append("g").attr("id","labels");
+
+		countryLabels
+			.selectAll("g")
+			.data(countries)
+			.enter()
+			.append("g")
+			.attr("class", "countryLabel")
+			.attr("id", function(d) {
+				// for (i)
+				return "countryLabel" + d;
+			});
+
+		console.log( "LABELS", countryLabels );
+			// .attr("transform", function(d) {
+			// 	return (
+			// 		"translate(" + path.centroid(d)[0] + "," + path.centroid(d)[1] + ")"
+			// 	);
+			// })
+
+			// add mouseover functionality to the label
+			/*.on("mouseover", function(d, i) {
+				d3.select(this).style("display", "block");
+			})
+			.on("mouseout", function(d, i) {
+				d3.select(this).style("display", "none");
+			})
+			// add an onlcick action to zoom into clicked country
+			.on("click", function(d, i) {
+				d3.selectAll(".country").classed("country-on", false);
+				d3.select("#country" + d.world.geometries.id).classed("country-on", true);
+				boxZoom(path.bounds(d), path.centroid(d), 20);
+			});*/
+		// add the text to the label group showing country name
+		// countryLabels
+		// 	.append("text")
+		// 	.attr("class", "countryName")
+		// 	.style("text-anchor", "middle")
+		// 	.attr("dx", 0)
+		// 	.attr("dy", 0)
+		// 	.text(function(d) {
+		// 		return d.countryName;
+		// 	})
+		// 	.call(getTextBox);
+		/*// add a background rectangle the same size as the text
+		countryLabels
+			.insert("rect", "text")
+			.attr("class", "countryLabelBg")
+			.attr("transform", function(d) {
+				return "translate(" + (d.bbox.x - 2) + "," + d.bbox.y + ")";
+			})
+			.attr("width", function(d) {
+				return d.bbox.width + 4;
+			})
+			.attr("height", function(d) {
+				return d.bbox.height;
+			});*/
+
+		/*//Bind data and create one path per GeoJSON feature
 		countriesAll = svg.append("g").attr("id", "map");
 		// add a background rectangle
 		countriesAll
@@ -181,59 +288,7 @@ d3.json(dataUrl,
 				d3.select(this).classed("country-on", true);
 				boxZoom(path.bounds(d), path.centroid(d), 20);
 			});
-		// Add a label group to each feature/country. This will contain the country name and a background rectangle
-		// Use CSS to have class "countryLabel" initially hidden
-		worldLabels = countriesAll
-			.selectAll("g")
-			.data(geojson.features)
-			.enter()
-			.append("g")
-			.attr("class", "countryLabel")
-			.attr("id", function(d) {
-				return "countryLabel" + d.id;
-			})
-			.attr("transform", function(d) {
-				return (
-					"translate(" + path.centroid(d)[0] + "," + path.centroid(d)[1] + ")"
-				);
-			})
-			// add mouseover functionality to the label
-			.on("mouseover", function(d, i) {
-				d3.select(this).style("display", "block");
-			})
-			.on("mouseout", function(d, i) {
-				d3.select(this).style("display", "none");
-			})
-			// add an onlcick action to zoom into clicked country
-			.on("click", function(d, i) {
-				d3.selectAll(".country").classed("country-on", false);
-				d3.select("#country" + d.world.geometries.id).classed("country-on", true);
-				boxZoom(path.bounds(d), path.centroid(d), 20);
-			});
-		// add the text to the label group showing country name
-		worldLabels
-			.append("text")
-			.attr("class", "countryName")
-			.style("text-anchor", "middle")
-			.attr("dx", 0)
-			.attr("dy", 0)
-			.text(function(d) {
-				return d.properties.name;
-			})
-			.call(getTextBox);
-		// add a background rectangle the same size as the text
-		worldLabels
-			.insert("rect", "text")
-			.attr("class", "countryLabelBg")
-			.attr("transform", function(d) {
-				return "translate(" + (d.bbox.x - 2) + "," + d.bbox.y + ")";
-			})
-			.attr("width", function(d) {
-				return d.bbox.width + 4;
-			})
-			.attr("height", function(d) {
-				return d.bbox.height;
-			});
+
 		initiateZoom();
-	}
+*/	}
 );
