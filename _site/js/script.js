@@ -182,11 +182,21 @@ function drawMap( error, topology, expCountries ) {
 	// add container for all labels
 	var countryLabels = svg.append( "g" ).attr( "id", "labels" );
 
+	// Add a label group to each feature/country. This will contain the country name and a background rectangle
+	countryLabels.selectAll( "g" )
+		.data( geoData.features )
+		.enter()
+		.append( "g" )
+		.attr( "class", "countryLabel" )
+		.attr( "id", function( d ) {
+			return "label-" + d.id;
+	});
+
 	// loop through keys in export list
 	for ( var key in expCountries ) {
-		console.log( "NAME: " + expCountries[key]["countryName"] );
+		// console.log( "NAME: " + expCountries[key]["countryName"] );
 
-		// loop through country elements
+		// loop through country paths
 		highlights.each( function() {
 			d3.select( this );
 
@@ -196,17 +206,52 @@ function drawMap( error, topology, expCountries ) {
 
 				// add highlight color
 				this.classList.add( "country-on" );
-
-
-				// Add a label group to each feature/country. This will contain the country name and a background rectangle
-				countryLabels
-					.selectAll( "g" )
-					.enter()
-					.append( "g" )
-					.attr( "class", "countryLabel" )
-					.attr( "id", "name" + key );
 			};
 		});
+
+		// loop through country labels and text for name
+		countryLabels.each( function() {
+			name = d3.select( this ).selectAll( ".countryLabel" );
+			console.log( name.id );
+/*
+			if ( this.id == "label-" + key ) {
+				console.log( this.id );
+				d3.select(this).append( "text" )
+				.data( expCountries[key] )
+				.attr( "class", "countryName" )
+				.style( "text-anchor", "middle" )
+				.attr( "dx", 0 )
+				.attr( "dy", 0 )
+				.text( function( d ) {
+					return d.countryName;
+				})
+				.call( getTextBox );
+			}*/
+		});
+		// add the text to the label group showing country name
+// 		// countryLabels
+// 		// 	.append("text")
+// 		// 	.attr("class", "countryName")
+// 		// 	.style("text-anchor", "middle")
+// 		// 	.attr("dx", 0)
+// 		// 	.attr("dy", 0)
+// 		// 	.text(function(d) {
+// 		// 		return d.countryName;
+// 		// 	})
+// 		// 	.call(getTextBox);
+// 		/*// add a background rectangle the same size as the text
+// 		countryLabels
+// 			.insert("rect", "text")
+// 			.attr("class", "countryLabelBg")
+// 			.attr("transform", function(d) {
+// 				return "translate(" + (d.bbox.x - 2) + "," + d.bbox.y + ")";
+// 			})
+// 			.attr("width", function(d) {
+// 				return d.bbox.width + 4;
+// 			})
+// 			.attr("height", function(d) {
+// 				return d.bbox.height;
+// 			});*/
 	}
 }
 
@@ -248,21 +293,6 @@ function drawMap( error, topology, expCountries ) {
 // 		// }
 
 // 		// console.log( highlights );
-
-// 		// Add a label group to each feature/country. This will contain the country name and a background rectangle
-// 		// Use CSS to have class "countryLabel" initially hidden
-// 		var countryLabels = svg.append( "g" ).attr( "id", "labels" );
-
-// 		countryLabels
-// 			.selectAll( "g" )
-// 			.data( expCountries )
-// 			.enter()
-// 			.append("g")
-// 			.attr("class", "countryLabel")
-// 			.attr("id", function(d) {
-// 				// for (i)
-// 				return "countryLabel" + d;
-// 			});
 
 // 		// console.log( "LABELS", d3.keys(expCountries) );
 // 			// .attr("transform", function(d) {
