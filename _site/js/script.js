@@ -16,8 +16,8 @@ var w = parseInt(d3.select("#master_container").style("width")),
 // variables for catching min and max zoom factors
 var minZoom;
 var maxZoom;
-// variable for catching geojson
-var geojson;
+// variable for catching geoData
+var geoData = null;
 
 // DEFINE FUNCTIONS/OBJECTS
 // Define map projection
@@ -139,156 +139,214 @@ var svg = d3
 var topoUrl = "data/world-topo.json"; // full world map
 var countriesUrl = "data/export-countries.json"; // list of export countries
 
-// draw world map
-d3.json(topoUrl,
-	function(error, topology) {
-		if (error) throw error;
-		// console.log("topojson", topology);
+d3.queue()
+	.defer( d3.json, topoUrl )
+	.defer( d3.json, countriesUrl )
+	.await ( drawMap );
 
-		// populate geojson variable created on load
-		geojson = topojson.feature(topology, topology.objects.world);
-		// console.log("geojson", geojson);
+function drawMap( error, topology, expCountries ) {
+	if ( error ) throw error;
 
-		//Bind data and create one path per GeoJSON feature
-		var countriesAll = svg.append("g").attr("id", "map");
-		// add a background rectangle
-		countriesAll
-			.append("rect")
-			.attr("x", 0)
-			.attr("y", 0)
-			.attr("width", w)
-			.attr("height", h);
+	// populate geoData variable created on load
+	geoData = topojson.feature( topology, topology.objects.world );
 
-		// draw a path for each feature/country
-		var world = countriesAll
-			.selectAll("path")
-			.data(geojson.features)
-			.enter()
-			.append("path")
-			.attr("d", path)
-			.attr("id", function(d, i) {
-				return "country" + d.id;
-				console.log(d.id);
-			})
-			.attr("class", "country");
+	console.log( "geoData", geoData );
+
+	//Bind data and create one path per geoData feature
+	var countriesAll = svg.append( "g" ).attr( "id", "countries" );
+
+	// add a background rectangle
+	countriesAll
+		.append( "rect" )
+		.attr( "x", 0 )
+		.attr( "y", 0 )
+		.attr( "width", w )
+		.attr( "height", h );
+
+	// draw a path for each feature/country
+	var world = countriesAll
+		.selectAll( "path" )
+		.data( geoData.features )
+		.enter()
+		.append( "path" )
+		.attr( "d", path )
+		.attr( "id", function( d ) {
+			return d.id;
+		})
+		.attr( "class", "country" );
+
+	// select all countries by class
+	var highlights = svg.select( "#countries" )
+		.selectAll( ".country" );
+
+	// add container for all labels
+	var countryLabels = svg.append( "g" ).attr( "id", "labels" );
+
+	// loop through keys in export list
+	for ( var key in expCountries ) {
+		console.log( "NAME: " + expCountries[key]["countryName"] );
+
+		// loop through country elements
+		highlights.each( function() {
+			d3.select( this );
+
+			// compare element id to keys
+			if ( this.id == key ) {
+				// console.log( this.id + " SAME AS " + key );
+
+				// add highlight color
+				this.classList.add( "country-on" );
+
+
+				// Add a label group to each feature/country. This will contain the country name and a background rectangle
+				countryLabels
+					.selectAll( "g" )
+					.enter()
+					.append( "g" )
+					.attr( "class", "countryLabel" )
+					.attr( "id", "name" + key );
+			};
+		});
 	}
-);
+}
 
 // highlight lng export countries
-d3.json(countriesUrl,
-	function(error, expCountries) {
-		if (error) throw error;
+// d3.json( countriesUrl,
+// 	function( error, expCountries ) {
+// 		if ( error ) throw error;
 
-		console.log( expCountries );
-		// console.log("Export countries", d3.keys(lngExports));
+// 		// console.log( expCountries );
 
-	    /*for (var i = 0; i < resources.length; i++) {
-	        var obj = resources[i]
-	        for (var key in obj) {
-	            console.log(key+"="+obj[key]);
-	        }
-	    }   */
+// 		var highlights = svg.select( "#countries" )
+// 			.selectAll( ".country" );
+// 			// .data ( expCountries )
 
-		// console.log(countryNames);
+// 		highlights.each( function() {
+// 				d3.select( this );
+// 				console.log( this.id );
+// 				// for ( var key in d ) {
+// 				// 	console.log ( key );
 
-		// Add a label group to each feature/country. This will contain the country name and a background rectangle
-		// Use CSS to have class "countryLabel" initially hidden
-		var countryLabels = svg.append("g").attr("id","labels");
+// 				// 	if ( this.id == key ) {
+// 				// 		console.log( this.id + " SAME AS " + key )
+// 				// 	};
+// 				// }
+// 			});
 
-		countryLabels
-			.selectAll("g")
-			.data(expCountries.countries)
-			.enter()
-			.append("g")
-			.attr("class", "countryLabel")
-			.attr("id", function(d) {
-				// for (i)
-				return "countryLabel" + d;
-			});
+// 		// // highlights.selectAll( "path" ).selectAll( ".country" );
+//   //   		// .each( function() { this.__data__ = { id: this.id }; } );
+//   //   		// .data( expCountries/*, function( d, i ) {
+//   //   			for ( var key in d ) {
+//   //   				return d[key];
+//   //   			};
+//   //   			// console.log( d[key] );
+//   //   		// } */);
+//   //   		// .text( function(d) { return d.text; } );
 
-		console.log( "LABELS", countryLabels );
-			// .attr("transform", function(d) {
-			// 	return (
-			// 		"translate(" + path.centroid(d)[0] + "," + path.centroid(d)[1] + ")"
-			// 	);
-			// })
+// 		// for ( var key in expCountries ) {
+// 		// 	// console.log( "#" + key );
+// 		// }
 
-			// add mouseover functionality to the label
-			/*.on("mouseover", function(d, i) {
-				d3.select(this).style("display", "block");
-			})
-			.on("mouseout", function(d, i) {
-				d3.select(this).style("display", "none");
-			})
-			// add an onlcick action to zoom into clicked country
-			.on("click", function(d, i) {
-				d3.selectAll(".country").classed("country-on", false);
-				d3.select("#country" + d.world.geometries.id).classed("country-on", true);
-				boxZoom(path.bounds(d), path.centroid(d), 20);
-			});*/
-		// add the text to the label group showing country name
-		// countryLabels
-		// 	.append("text")
-		// 	.attr("class", "countryName")
-		// 	.style("text-anchor", "middle")
-		// 	.attr("dx", 0)
-		// 	.attr("dy", 0)
-		// 	.text(function(d) {
-		// 		return d.countryName;
-		// 	})
-		// 	.call(getTextBox);
-		/*// add a background rectangle the same size as the text
-		countryLabels
-			.insert("rect", "text")
-			.attr("class", "countryLabelBg")
-			.attr("transform", function(d) {
-				return "translate(" + (d.bbox.x - 2) + "," + d.bbox.y + ")";
-			})
-			.attr("width", function(d) {
-				return d.bbox.width + 4;
-			})
-			.attr("height", function(d) {
-				return d.bbox.height;
-			});*/
+// 		// console.log( highlights );
 
-		/*//Bind data and create one path per GeoJSON feature
-		countriesAll = svg.append("g").attr("id", "map");
-		// add a background rectangle
-		countriesAll
-			.append("rect")
-			.attr("x", 0)
-			.attr("y", 0)
-			.attr("width", w)
-			.attr("height", h);
+// 		// Add a label group to each feature/country. This will contain the country name and a background rectangle
+// 		// Use CSS to have class "countryLabel" initially hidden
+// 		var countryLabels = svg.append( "g" ).attr( "id", "labels" );
 
-		// draw a path for each feature/country
-		world = countriesAll
-			.selectAll("path")
-			.data(geojson.features)
-			.enter()
-			.append("path")
-			.attr("d", path)
-			.attr("id", function(d, i) {
-				return "country" + d.id;
-				console.log(d.id);
-			})
-			.attr("class", "country")
-			//      .attr("stroke-width", 10)
-			//      .attr("stroke", "#ff0000")
-			// add a mouseover action to show name label for feature/country
-			.on("mouseover", function(d, i) {
-				d3.select("#countryLabel" + d.id).style("display", "block");
-			})
-			.on("mouseout", function(d, i) {
-				d3.select("#countryLabel" + d.id).style("display", "none");
-			})
-			// add an onclick action to zoom into clicked country
-			.on("click", function(d, i) {
-				d3.selectAll(".country").classed("country-on", false);
-				d3.select(this).classed("country-on", true);
-				boxZoom(path.bounds(d), path.centroid(d), 20);
-			});
+// 		countryLabels
+// 			.selectAll( "g" )
+// 			.data( expCountries )
+// 			.enter()
+// 			.append("g")
+// 			.attr("class", "countryLabel")
+// 			.attr("id", function(d) {
+// 				// for (i)
+// 				return "countryLabel" + d;
+// 			});
 
-		initiateZoom();
-*/	}
-);
+// 		// console.log( "LABELS", d3.keys(expCountries) );
+// 			// .attr("transform", function(d) {
+// 			// 	return (
+// 			// 		"translate(" + path.centroid(d)[0] + "," + path.centroid(d)[1] + ")"
+// 			// 	);
+// 			// })
+
+// 			// add mouseover functionality to the label
+// 			.on("mouseover", function(d, i) {
+// 				d3.select(this).style("display", "block");
+// 			})
+// 			.on("mouseout", function(d, i) {
+// 				d3.select(this).style("display", "none");
+// 			})
+// 			// add an onlcick action to zoom into clicked country
+// 			.on("click", function(d, i) {
+// 				d3.selectAll(".country").classed("country-on", false);
+// 				d3.select("#country" + d.world.geometries.id).classed("country-on", true);
+// 				boxZoom(path.bounds(d), path.centroid(d), 20);
+// 			});
+// 		// add the text to the label group showing country name
+// 		// countryLabels
+// 		// 	.append("text")
+// 		// 	.attr("class", "countryName")
+// 		// 	.style("text-anchor", "middle")
+// 		// 	.attr("dx", 0)
+// 		// 	.attr("dy", 0)
+// 		// 	.text(function(d) {
+// 		// 		return d.countryName;
+// 		// 	})
+// 		// 	.call(getTextBox);
+// 		/*// add a background rectangle the same size as the text
+// 		countryLabels
+// 			.insert("rect", "text")
+// 			.attr("class", "countryLabelBg")
+// 			.attr("transform", function(d) {
+// 				return "translate(" + (d.bbox.x - 2) + "," + d.bbox.y + ")";
+// 			})
+// 			.attr("width", function(d) {
+// 				return d.bbox.width + 4;
+// 			})
+// 			.attr("height", function(d) {
+// 				return d.bbox.height;
+// 			});*/
+
+// 		/*//Bind data and create one path per geoData feature
+// 		countriesAll = svg.append("g").attr("id", "map");
+// 		// add a background rectangle
+// 		countriesAll
+// 			.append("rect")
+// 			.attr("x", 0)
+// 			.attr("y", 0)
+// 			.attr("width", w)
+// 			.attr("height", h);
+
+// 		// draw a path for each feature/country
+// 		world = countriesAll
+// 			.selectAll("path")
+// 			.data(geoData.features)
+// 			.enter()
+// 			.append("path")
+// 			.attr("d", path)
+// 			.attr("id", function(d, i) {
+// 				return "country" + d.id;
+// 				console.log(d.id);
+// 			})
+// 			.attr("class", "country")
+// 			//      .attr("stroke-width", 10)
+// 			//      .attr("stroke", "#ff0000")
+// 			// add a mouseover action to show name label for feature/country
+// 			.on("mouseover", function(d, i) {
+// 				d3.select("#countryLabel" + d.id).style("display", "block");
+// 			})
+// 			.on("mouseout", function(d, i) {
+// 				d3.select("#countryLabel" + d.id).style("display", "none");
+// 			})
+// 			// add an onclick action to zoom into clicked country
+// 			.on("click", function(d, i) {
+// 				d3.selectAll(".country").classed("country-on", false);
+// 				d3.select(this).classed("country-on", true);
+// 				boxZoom(path.bounds(d), path.centroid(d), 20);
+// 			});
+
+// 		initiateZoom();
+// */	}
+// );
