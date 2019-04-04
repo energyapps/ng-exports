@@ -8,11 +8,11 @@ var pymChild = new pym.Child();
 // DEFINE VARIABLES
 // Define size of map group: full world map is 2:1 ratio
 var masterW = parseInt( d3.select( "#master_container" ).style( "width" ) ),
-	masterH = masterW / 2,
-	// width grid
-	thirdW = masterW / 3,
-	halfW = masterW / 2,
-	twothirdW = thirdW * 2;
+	masterH = masterW / 2;
+
+// variables for min/max years
+var minYr = 2016,
+	maxYr = 2019;
 
 // variables for catching min and max zoom factors
 var minZoom,
@@ -343,8 +343,8 @@ function drawMap( error, topology, expCountries ) {
 	for ( var key in expCountries ) {
 		// console.log( "NAME: " + expCountries[ key ][ "countryName" ] );
 
-		var allYears = expCountries[ key ][ "lngYear" ],
-			parseYears = [ key, allYears.match( /(\d[\d\.]*)/g ) ];
+		var rawYears = expCountries[ key ][ "lngYear" ],
+			parseYears = [ key, rawYears.match( /(\d[\d\.]*)/g ) ];
 
 		parseYears[ 1 ] = parseYears[ 1 ].map( n => parseInt( n ) );
 		// console.log( "ORIGINAL", parseYears[ 1 ] );
@@ -354,15 +354,36 @@ function drawMap( error, topology, expCountries ) {
 		// console.log( key, "reversed", parseYears[ 1 ] );
 		// console.log( "LENGTH:", parseYears[ 1 ].length );
 
-		// loop through array and trim years older than 2016
+		// loop through array and trim years older than the min year variable
 		for ( i = parseYears[ 1 ].length - 1; i >= 0; i-- ) {
-			if ( parseYears[ 1 ][ i ] < 2016 ) {
+			if ( parseYears[ 1 ][ i ] < minYr ) {
 				// console.log( i + 1, "too old" );
 				parseYears[ 1 ].splice( 0, i + 1 );
 				// console.log( ">> trimmed to", parseYears[ 1 ] );
 				//} else {
 				//	console.log( "** no trim", i + 1, parseYears[ 1 ] );
 			}
+		}
+		console.log( parseYears );
+
+		var yearsArray = [];
+		// !!!!!!! add subarrays for each year being mapped
+
+		// This is where the data names are grouped.
+		for ( var year in parseYears ) {
+			if ( year.slice( -2 ) == "00" ) {
+				typeArray[ 0 ].push( year )
+			} else if ( year.slice( -2 ) == "10" ) {
+				typeArray[ 1 ].push( year )
+			} else if ( year.slice( -2 ) == "13" ) {
+				typeArray[ 2 ].push( year )
+			} else if ( year.slice( -2 ) == "20" ) {
+				typeArray[ 3 ].push( year )
+			} else if ( year.slice( -2 ) == "30" ) {
+				typeArray[ 4 ].push( year )
+			} else if ( year.slice( -2 ) == "50" ) {
+				typeArray[ 5 ].push( year )
+			};
 		}
 
 		// loop through all country paths
