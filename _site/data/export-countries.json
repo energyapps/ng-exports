@@ -41,7 +41,7 @@
 	},
 	"COL": {
 		"countryName": "Colombia",
-		"lngYear": 2018,
+		"lngYear": "2018",
 		"notes": ""
 	},
 	"DOM": {
@@ -56,12 +56,12 @@
 	},
 	"FRA": {
 		"countryName": "France",
-		"lngYear": 2018,
+		"lngYear": "2018",
 		"notes": ""
 	},
 	"GRC": {
 		"countryName": "Greece",
-		"lngYear": 2018,
+		"lngYear": "2018",
 		"notes": ""
 	},
 	"IND": {
@@ -71,7 +71,7 @@
 	},
 	"ISR": {
 		"countryName": "Israel",
-		"lngYear": 2018,
+		"lngYear": "2018",
 		"notes": ""
 	},
 	"ITA": {
@@ -81,7 +81,7 @@
 	},
 	"JAM": {
 		"countryName": "Jamaica",
-		"lngYear": 2018,
+		"lngYear": "2018",
 		"notes": ""
 	},
 	"JPN": {
@@ -106,7 +106,7 @@
 	},
 	"LTU": {
 		"countryName": "Lithuania",
-		"lngYear": 2017,
+		"lngYear": "2017",
 		"notes": ""
 	},
 	"MLT": {
@@ -131,7 +131,7 @@
 	},
 	"PAN": {
 		"countryName": "Panama",
-		"lngYear": 2018,
+		"lngYear": "2018",
 		"notes": ""
 	},
 	"POL": {
@@ -146,7 +146,7 @@
 	},
 	"SGP": {
 		"countryName": "Singapore",
-		"lngYear": 2018,
+		"lngYear": "2018",
 		"notes": ""
 	},
 	"ESP": {
@@ -161,7 +161,7 @@
 	},
 	"THA": {
 		"countryName": "Thailand",
-		"lngYear": 2017,
+		"lngYear": "2017",
 		"notes": ""
 	},
 	"TUR": {

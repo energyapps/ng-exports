@@ -10,15 +10,13 @@
 Map
 ++++++++++++++++++++++++++++++++++++++*/
 #dis1 {
-	background-color: #ddd;    /*position: absolute;
-																																							    */
+	background-color: #ddd;    /*position: absolute;*/
 }
 
 #master_container {
 	font-family: 'Avenir LT W02 35 Light', verdana, sans-serif;
 	text-transform: none !important;
-	position: relative;
-	height: 800px;
+	position: relative;	/*height: 800px;*/
 	position: relative;
 	font-size: .75rem;
 	background-color: #ddd;
@@ -111,26 +109,25 @@ Map
 }
 
 .country {
-	fill: #fff;    /* country colour */
+	fill: #fff;     /*country colour */
 	stroke: #333;    /* country border colour */
 	stroke-width: 1;    /* country border width */
 }
 
-.country-on {
-	fill: #B8DF65;    /* highlight colour for selected country */
-}
-
 .countryLabel {
-	display: none;    /* hide all country labels by default */
+	display: none;     /*hide all country labels by default */
 }
 
 .countryName {
-	fill: #fffaff;    /* country label text colour */
+	fill: white;	/*country label text colour*/
+	height: 100%;
+	width: 100%;
 }
 
-.countryLabelBg {
-	fill: #B8DF65;    /* country label background colour */
-}
+/*.labelBg {
+height: 1%;
+width: 1%;
+}*/
 
 /******************************** LEGEND ********************************/
 #legend-content {

@@ -5,135 +5,252 @@ var pymChild = new pym.Child();
 
 // Initial Script (remove below and replace)
 
-
 // DEFINE VARIABLES
-// Define size of map group
-// Full world map is 2:1 ratio
-/*w = 3000;
-h = 1500;*/
-var w = parseInt(d3.select("#master_container").style("width")),
-	h = w / 2;
-// variables for catching min and max zoom factors
-var minZoom;
-var maxZoom;
-// variable for catching geoData
-var geoData = null;
+// Define size of map group: full world map is 2:1 ratio
+var masterW = parseInt( d3.select( "#master_container" ).style( "width" ) ),
+	masterH = masterW / 2,
+	// width grid
+	thirdW = masterW / 3,
+	halfW = masterW / 2,
+	twothirdW = thirdW * 2;
 
-// DEFINE FUNCTIONS/OBJECTS
-// Define map projection
+// variables for catching min and max zoom factors
+var minZoom,
+	maxZoom,
+	geoData, // variable for catching geoData
+	countriesAll, // variable for catching all mapped countries (world)
+	highlights; // variable for catching export countries by code
+
+// color scale
+var colors = d3.scaleOrdinal()
+	.domain( [ "country", "country-on", "labels" ] )
+	.range( [ "#FFFFFF", "#8BCC00", "#12769e" ] );
+
+// DOE Green #8BCC00 / rgb(139,204,0)
+// DOE Light Blue 226 #19A9E2 / rgb(25,169,226)
+// DOE Pink #E7227E
+// Map Water Blue #e6ebed
+// Tomato #FF6347
+// Neon Blue #00eeee
+
+// ***** DEFINE MAP + PROJECTION ***** //
 var projection = d3
 	.geoMercator()
-	.center([0, 20]) // set centre to further North as we are cropping more off bottom of map
-	.scale([w / (2 * Math.PI)]) // scale to fit group width
-	.translate([w / 2, h / 2]) // ensure centered in group
+	.center( [ 0, 20 ] ) // set centre to further North as we are cropping more off bottom of map to account for Antarctica
+	.scale( [ masterW / ( 2 * Math.PI ) ] ) // scale to fit group width
+	.translate( [ masterW / 2, masterH / 2 ] ) // ensure centered in group
 ;
 
 // Define map path
 var path = d3
 	.geoPath()
-	.projection(projection);
+	.projection( projection );
 
-// Create function to apply zoom to countriesAll
+// ***** ZOOM FUNCTIONS ***** //
+// Function to apply zoom to countriesAll
 function zoomed() {
 	t = d3
 		.event
 		.transform;
 	countriesAll
-		.attr("transform", "translate(" + [t.x, t.y] + ")scale(" + t.k + ")");
+		.attr( "transform", "translate(" + [ t.x, t.y ] + ")scale(" + t.k + ")" );
 }
 
-// Define map zoom behaviour
+// Define map zoom behavior
 var zoom = d3
 	.zoom()
-	.on("zoom", zoomed);
+	.on( "zoom", zoomed );
 
-function getTextBox(selection) {
-	selection
-		.each(function(d) {
-			d.bbox = this
-				.getBBox();
-		});
-}
-
-// Function that calculates zoom/pan limits and sets zoom to default value
+// Function to calculate zoom/pan limits and sets zoom to default value
 function initiateZoom() {
 	// Define a "minzoom" whereby the "world" is as small possible without leaving white space at top/bottom or sides
-	minZoom = Math.max($("#map").width() / w, $("#map").height() / h);
+	minZoom = Math.max( $( "#map_container" ).width() / masterW, $( "#map_container" ).height() / masterH );
 	// set max zoom to a suitable factor of this value
 	maxZoom = 3 * minZoom;
 	// set extent of zoom to chosen values
 	// set translate extent so that panning can't cause map to move out of viewport
 	zoom
-		.scaleExtent([minZoom, maxZoom])
-		.translateExtent([[0, 0], [w, h]]);
+		.scaleExtent( [ minZoom, maxZoom ] )
+		.translateExtent( [ [ 0, 0 ], [ masterW, masterH ] ] );
 	// define X and Y offset for centre of map to be shown in centre of holder
-	midX = ($("#map").width() - minZoom * w) / 2;
-	midY = ($("#map").height() - minZoom * h) / 2;
+	midX = ( $( "#map_container" ).width() - minZoom * masterW ) / 2;
+	midY = ( $( "#map_container" ).height() - minZoom * masterH ) / 2;
 	// change zoom transform to min zoom and centre offsets
-	svg.call(zoom.transform, d3.zoomIdentity.translate(midX, midY).scale(minZoom));
+	svg.call( zoom.transform, d3.zoomIdentity.translate( midX, midY ).scale( minZoom ) );
 }
 
 // zoom to show a bounding box, with optional additional padding as percentage of box size
-function boxZoom(box, centroid, paddingPerc) {
-	minXY = box[0];
-	maxXY = box[1];
+function boxZoom( box, centroid, paddingPerc ) {
+	minXY = box[ 0 ];
+	maxXY = box[ 1 ];
 	// find size of map area defined
-	zoomWidth = Math.abs(minXY[0] - maxXY[0]);
-	zoomHeight = Math.abs(minXY[1] - maxXY[1]);
+	zoomWidth = Math.abs( minXY[ 0 ] - maxXY[ 0 ] );
+	zoomHeight = Math.abs( minXY[ 1 ] - maxXY[ 1 ] );
 	// find midpoint of map area defined
-	zoomMidX = centroid[0];
-	zoomMidY = centroid[1];
+	zoomMidX = centroid[ 0 ];
+	zoomMidY = centroid[ 1 ];
 	// increase map area to include padding
-	zoomWidth = zoomWidth * (1 + paddingPerc / 100);
-	zoomHeight = zoomHeight * (1 + paddingPerc / 100);
+	zoomWidth = zoomWidth * ( 1 + paddingPerc / 100 );
+	zoomHeight = zoomHeight * ( 1 + paddingPerc / 100 );
 	// find scale required for area to fill svg
-	maxXscale = $("svg").width() / zoomWidth;
-	maxYscale = $("svg").height() / zoomHeight;
-	zoomScale = Math.min(maxXscale, maxYscale);
+	maxXscale = $( "svg" ).width() / zoomWidth;
+	maxYscale = $( "svg" ).height() / zoomHeight;
+	zoomScale = Math.min( maxXscale, maxYscale );
 	// handle some edge cases
 	// limit to max zoom (handles tiny world)
-	zoomScale = Math.min(zoomScale, maxZoom);
+	zoomScale = Math.min( zoomScale, maxZoom );
 	// limit to min zoom (handles large world and world that span the date line)
-	zoomScale = Math.max(zoomScale, minZoom);
+	zoomScale = Math.max( zoomScale, minZoom );
 	// Find screen pixel equivalent once scaled
 	offsetX = zoomScale * zoomMidX;
 	offsetY = zoomScale * zoomMidY;
 	// Find offset to centre, making sure no gap at left or top of holder
-	dleft = Math.min(0, $("svg").width() / 2 - offsetX);
-	dtop = Math.min(0, $("svg").height() / 2 - offsetY);
+	dleft = Math.min( 0, $( "svg" ).width() / 2 - offsetX );
+	dtop = Math.min( 0, $( "svg" ).height() / 2 - offsetY );
 	// Make sure no gap at bottom or right of holder
-	dleft = Math.max($("svg").width() - w * zoomScale, dleft);
-	dtop = Math.max($("svg").height() - h * zoomScale, dtop);
+	dleft = Math.max( $( "svg" ).width() - masterW * zoomScale, dleft );
+	dtop = Math.max( $( "svg" ).height() - masterH * zoomScale, dtop );
 	// set zoom
 	svg
 		.transition()
-		.duration(500)
+		.duration( 500 )
 		.call(
 			zoom.transform,
-			d3.zoomIdentity.translate(dleft, dtop).scale(zoomScale)
+			d3.zoomIdentity.translate( dleft, dtop ).scale( zoomScale )
 		);
 }
 
 // on window resize
-$(window).resize(function() {
+$( window ).resize( function() {
 	//console.log("resized");
 	// Resize SVG
 	svg
-		.attr("width", $("#map").width())
-		.attr("height", $("#map").height());
+		.attr( "width", $( "#map_container" ).width() )
+		.attr( "height", $( "#map_container" ).height() );
 	initiateZoom();
-});
+} );
 
+// ***** ANIMATION FUNCTIONS ***** //
+// begin looping stuff
+var num = 4; // number of iterations, i.e. number of years
+var i = 1; // which year you are on when you start
+var play;
+
+var m = 1;
+
+function start() {
+	if ( play != "undefined" ) {
+		clearInterval( play );
+	};
+
+	if ( i === num ) {
+		i -= ( num );
+	};
+	play = setInterval( mechanic, 1000 );
+}
+
+function pause() {
+	if ( m === 0 && i != num ) {
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' );
+		m += 1;
+		play = setInterval( mechanic, 1000 );
+		// clearInterval(play);
+	} else if ( m === 1 && i != num ) {
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_play.png' );
+		m -= 1;
+		clearInterval( play );
+		// console.log( 'you cleared the interval in "pause"' )
+	} else {
+		// console.log( 'end of loop and restarting' )
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' ); //restart at the beginning??
+		i = 0;
+		play = setInterval( mechanic, 1000 );
+		// here i want to reset the variables to i=0 m=0
+	}
+	// console.log( 'you hit pause at: ' + i )
+}
+
+// what to do each iteration
+function mechanic() {
+	i += 1;
+	rebuildLoop( i );
+	if ( i === num ) {
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_redo.png' );
+		clearInterval( play );
+		// console.log( 'you cleared the interval by reaching the end of mechanic' )
+	}
+}
+
+function rebuildLoop( i ) {
+	// convaluted way to add next and next and next color to list.
+	if ( i === 1 ) {
+		$( '.year' ).removeClass( 'activea' );
+		$( '.year:first-child' ).addClass( 'activea' )
+	} else {
+		$( '.activea' ).next().addClass( 'activea2' )
+		$( '.year' ).removeClass( 'activea' );
+		$( '.activea2' ).addClass( 'activea' );
+		$( '.activea' ).removeClass( 'activea2' );
+	};
+
+	// console.log( 'rebuildloop is at: ' + i )
+}
+
+// initial run
+// resize();
+// start();
+
+// d3.select( window ).on( 'resize', resize );
+// $( '.rpt2' ).click( function( e ) {
+// 	pause();
+// } );
+
+// Do something on keystroke of escape....escape == 27.
+// $( document ).keyup( function( e ) {
+// 	if ( e.keyCode == 27 ) {
+// 		d3.selectAll( ".tool" ).remove();
+// 	}
+// } );
+
+// ***** OTHER FUNCTIONS ***** //
+// Find and populate element bounds
+function getBounds( selection ) {
+	selection.each( function( d ) {
+		// d.bbox = this.getBBox();
+		d.bbox = this.getBoundingClientRect();
+	} );
+}
+
+// Find and populate element center
+function getCenter( selection ) {
+	selection.each( function( d ) {
+		d.centroid = [ path.centroid( d )[ 0 ] - 25, path.centroid( d )[ 1 ] - 5 ];
+	} );
+}
+
+function showLabelRollover( elem ) {
+	// add a mouseover action to show name label for country
+	elem.on( "mouseover", function( d, i ) {
+			d3.select( "#label-" + d.id )
+				.style( "display", "block" );
+		} )
+		.on( "mouseout", function( d, i ) {
+			d3.select( "#label-" + d.id )
+				.style( "display", "none" );
+		} );
+}
+
+// ***** DRAW SVG ***** //
 // create an SVG
 var svg = d3
-	.select("#map")
-	.append("svg")
-	.attr("id", "map_container")
+	.select( "#map_container" )
+	.append( "svg" )
+	.attr( "id", "map" )
 	// set to the same size as the "map-holder" div
-	.attr("width", $("#map").width())
-	.attr("height", $("#map").height())
+	.attr( "width", $( "#map_container" ).width() )
+	.attr( "height", $( "#map_container" ).height() )
 	// add zoom functionality
-	.call(zoom);
+	.call( zoom );
 
 // get map data
 var topoUrl = "data/world-topo.json"; // full world map
@@ -142,116 +259,170 @@ var countriesUrl = "data/export-countries.json"; // list of export countries
 d3.queue()
 	.defer( d3.json, topoUrl )
 	.defer( d3.json, countriesUrl )
-	.await ( drawMap );
+	.await( drawMap );
 
 function drawMap( error, topology, expCountries ) {
 	if ( error ) throw error;
 
 	// populate geoData variable created on load
-	geoData = topojson.feature( topology, topology.objects.world );
-
-	console.log( "geoData", geoData );
+	geoData = topojson.feature( topology, topology.objects.world ).features;
+	// console.log( "geoData", geoData );
 
 	//Bind data and create one path per geoData feature
-	var countriesAll = svg.append( "g" ).attr( "id", "countries" );
+	countriesAll = svg.append( "g" ).attr( "id", "countries" );
 
 	// add a background rectangle
 	countriesAll
 		.append( "rect" )
 		.attr( "x", 0 )
 		.attr( "y", 0 )
-		.attr( "width", w )
-		.attr( "height", h );
+		.attr( "width", masterW )
+		.attr( "height", masterH );
 
 	// draw a path for each feature/country
-	var world = countriesAll
-		.selectAll( "path" )
-		.data( geoData.features )
+	countriesAll.selectAll( "path" )
+		.data( geoData )
 		.enter()
 		.append( "path" )
 		.attr( "d", path )
 		.attr( "id", function( d ) {
 			return d.id;
-		})
-		.attr( "class", "country" );
+		} )
+		.attr( "class", "country" )
+		.style( "fill", function( d ) {
+			return colors( "country" );
+		} )
+		// call function to get center
+		.call( getCenter );
 
 	// select all countries by class
-	var highlights = svg.select( "#countries" )
-		.selectAll( ".country" );
+	highlights = countriesAll.selectAll( ".country" )
+		// call function to get bounds
+		.call( getBounds );
+
+	// call function to show labels on rollover of highlighted countries
+	highlights.call( showLabelRollover );
 
 	// add container for all labels
 	var countryLabels = svg.append( "g" ).attr( "id", "labels" );
 
 	// Add a label group to each feature/country. This will contain the country name and a background rectangle
 	countryLabels.selectAll( "g" )
-		.data( geoData.features )
+		.data( geoData )
 		.enter()
 		.append( "g" )
 		.attr( "class", "countryLabel" )
 		.attr( "id", function( d ) {
 			return "label-" + d.id;
-	});
+		} )
+		.attr( "transform", function( d ) {
+			// console.log( d.centroid );
+			// adjust vertical center for outlier countries
+			if ( d.centroid[ 1 ] - d.bbox.height < -100 ) {
+				// console.log( key, "<-100", countryCenter[ 1 ] - d.bbox.height );
+				d.centroid[ 1 ] = d.centroid[ 1 ] + 80;
+			} else if ( d.centroid[ 1 ] - d.bbox.height < 70 ) {
+				// console.log( key, "<70", countryCenter[ 1 ] - d.bbox.height );
+				d.centroid[ 1 ] = d.centroid[ 1 ] + 10;
+			};
+			return ( "translate(" + d.centroid + ")" )
+		} );
+
+	var names = countryLabels.selectAll( ".countryLabel" )
+		// call function to show labels on rollover
+		.call( showLabelRollover );
+
+	// add a background rectangle the same size as the text
+	var nameBg = names.append( "rect" )
+		.attr( "class", "labelBg" )
+		.style( "fill", function( d ) {
+			return colors( "labels" );
+		} );
 
 	// loop through keys in export list
 	for ( var key in expCountries ) {
-		// console.log( "NAME: " + expCountries[key]["countryName"] );
+		// console.log( "NAME: " + expCountries[ key ][ "countryName" ] );
 
-		// loop through country paths
+		var allYears = expCountries[ key ][ "lngYear" ],
+			parseYears = [ key, allYears.match( /(\d[\d\.]*)/g ) ];
+
+		parseYears[ 1 ] = parseYears[ 1 ].map( n => parseInt( n ) );
+		// console.log( "ORIGINAL", parseYears[ 1 ] );
+
+		// reverse years to ascending order
+		parseYears[ 1 ].reverse();
+		// console.log( key, "reversed", parseYears[ 1 ] );
+		// console.log( "LENGTH:", parseYears[ 1 ].length );
+
+		// loop through array and trim years older than 2016
+		for ( i = parseYears[ 1 ].length - 1; i >= 0; i-- ) {
+			if ( parseYears[ 1 ][ i ] < 2016 ) {
+				// console.log( i + 1, "too old" );
+				parseYears[ 1 ].splice( 0, i + 1 );
+				// console.log( ">> trimmed to", parseYears[ 1 ] );
+				//} else {
+				//	console.log( "** no trim", i + 1, parseYears[ 1 ] );
+			}
+		}
+
+		// loop through all country paths
 		highlights.each( function() {
-			d3.select( this );
-
-			// compare element id to keys
+			// select each path element
+			var colorChange = d3.select( this );
+			// compare path element id to export country keys
 			if ( this.id == key ) {
 				// console.log( this.id + " SAME AS " + key );
 
-				// add highlight color
-				this.classList.add( "country-on" );
+				// if match, change color
+				colorChange.style( "fill", function() {
+					// use color scale variable
+					return colors( "country-on" );
+				} );
 			};
-		});
+		} );
 
 		// loop through country labels and text for name
-		countryLabels.each( function() {
-			name = d3.select( this ).selectAll( ".countryLabel" );
-			console.log( name.id );
-/*
+		names.each( function( d ) {
 			if ( this.id == "label-" + key ) {
-				console.log( this.id );
-				d3.select(this).append( "text" )
-				.data( expCountries[key] )
-				.attr( "class", "countryName" )
-				.style( "text-anchor", "middle" )
-				.attr( "dx", 0 )
-				.attr( "dy", 0 )
-				.text( function( d ) {
-					return d.countryName;
-				})
-				.call( getTextBox );
-			}*/
-		});
-		// add the text to the label group showing country name
-// 		// countryLabels
-// 		// 	.append("text")
-// 		// 	.attr("class", "countryName")
-// 		// 	.style("text-anchor", "middle")
-// 		// 	.attr("dx", 0)
-// 		// 	.attr("dy", 0)
-// 		// 	.text(function(d) {
-// 		// 		return d.countryName;
-// 		// 	})
-// 		// 	.call(getTextBox);
-// 		/*// add a background rectangle the same size as the text
-// 		countryLabels
-// 			.insert("rect", "text")
-// 			.attr("class", "countryLabelBg")
-// 			.attr("transform", function(d) {
-// 				return "translate(" + (d.bbox.x - 2) + "," + d.bbox.y + ")";
-// 			})
-// 			.attr("width", function(d) {
-// 				return d.bbox.width + 4;
-// 			})
-// 			.attr("height", function(d) {
-// 				return d.bbox.height;
-// 			});*/
+				var thisName = expCountries[ key ][ "countryName" ];
+
+				// add the text to the label group showing country name
+				var name = d3.select( this )
+					.append( "text" )
+					.attr( "id", function( d ) {
+						return thisName;
+					} )
+					.attr( "class", "countryName" )
+					.style( "text-anchor", "middle" )
+					.text( function( d ) {
+						return thisName;
+					} )
+					.call( getBounds );
+
+				// move background rect to match
+				var box = d3.select( this )
+					.select( ".labelBg" )
+					.attr( "width", function( d ) {
+						return d.bbox.width + 10;
+					} )
+					.attr( "height", function( d ) {
+						return d.bbox.height + 6;
+					} )
+					.attr( "x", -5 )
+					.attr( "y", -6 );
+
+				name.attr( "x", function( d ) {
+						return d.bbox.width / 2;
+					} )
+					.attr( "y", function( d ) {
+						return d.bbox.height / 2;
+					} );
+				// need to move box to align with text
+				//.attr("transform", function() {
+				// return "translate(" + tip_text + ")";
+				// })
+			}
+		} );
 	}
 }
 
@@ -324,7 +495,7 @@ function drawMap( error, topology, expCountries ) {
 // 		// 	.text(function(d) {
 // 		// 		return d.countryName;
 // 		// 	})
-// 		// 	.call(getTextBox);
+// 		// 	.call(getBounds);
 // 		/*// add a background rectangle the same size as the text
 // 		countryLabels
 // 			.insert("rect", "text")
@@ -346,13 +517,13 @@ function drawMap( error, topology, expCountries ) {
 // 			.append("rect")
 // 			.attr("x", 0)
 // 			.attr("y", 0)
-// 			.attr("width", w)
-// 			.attr("height", h);
+// 			.attr("width", masterW)
+// 			.attr("height", masterH);
 
 // 		// draw a path for each feature/country
 // 		world = countriesAll
 // 			.selectAll("path")
-// 			.data(geoData.features)
+// 			.data(geoData)
 // 			.enter()
 // 			.append("path")
 // 			.attr("d", path)
