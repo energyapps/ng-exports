@@ -14,6 +14,19 @@ var masterW = parseInt( d3.select( "#master_container" ).style( "width" ) ),
 var minYr = 2016,
 	maxYr = 2019;
 
+// variable for range of years as an object with multidimensional arrays
+var yearsArray = [];
+
+// function to fill in range of years (from min to max, inclusive)
+function range( start, end ) {
+	var years = Array( end - start + 1 ).fill().map( ( _, idx ) => start + idx );
+	years.forEach( function( val, index, arr ) {
+		yearsArray[ val ] = [];
+	} );
+}
+// run range function
+range( minYr, maxYr );
+
 // variables for catching min and max zoom factors
 var minZoom,
 	maxZoom,
@@ -341,49 +354,21 @@ function drawMap( error, topology, expCountries ) {
 
 	// loop through keys in export list
 	for ( var key in expCountries ) {
-		// console.log( "NAME: " + expCountries[ key ][ "countryName" ] );
-
 		var rawYears = expCountries[ key ][ "lngYear" ],
 			parseYears = [ key, rawYears.match( /(\d[\d\.]*)/g ) ];
 
 		parseYears[ 1 ] = parseYears[ 1 ].map( n => parseInt( n ) );
-		// console.log( "ORIGINAL", parseYears[ 1 ] );
 
-		// reverse years to ascending order
-		parseYears[ 1 ].reverse();
-		// console.log( key, "reversed", parseYears[ 1 ] );
-		// console.log( "LENGTH:", parseYears[ 1 ].length );
-
-		// loop through array and trim years older than the min year variable
-		for ( i = parseYears[ 1 ].length - 1; i >= 0; i-- ) {
-			if ( parseYears[ 1 ][ i ] < minYr ) {
-				// console.log( i + 1, "too old" );
-				parseYears[ 1 ].splice( 0, i + 1 );
-				// console.log( ">> trimmed to", parseYears[ 1 ] );
-				//} else {
-				//	console.log( "** no trim", i + 1, parseYears[ 1 ] );
+		// loop through array to filter years
+		for ( i = 0; i < parseYears[ 1 ].length; i++ ) {
+			// loop through year range (from min to max)
+			for ( y = minYr; y <= maxYr; y++ ) {
+				// compare year to parsed years
+				if ( y == parseYears[ 1 ][ i ] ) {
+					// if numbers match, push country id to corresponding year array
+					yearsArray[ y ].push( parseYears[ 0 ] );
+				}
 			}
-		}
-		console.log( parseYears );
-
-		var yearsArray = [];
-		// !!!!!!! add subarrays for each year being mapped
-
-		// This is where the data names are grouped.
-		for ( var year in parseYears ) {
-			if ( year.slice( -2 ) == "00" ) {
-				typeArray[ 0 ].push( year )
-			} else if ( year.slice( -2 ) == "10" ) {
-				typeArray[ 1 ].push( year )
-			} else if ( year.slice( -2 ) == "13" ) {
-				typeArray[ 2 ].push( year )
-			} else if ( year.slice( -2 ) == "20" ) {
-				typeArray[ 3 ].push( year )
-			} else if ( year.slice( -2 ) == "30" ) {
-				typeArray[ 4 ].push( year )
-			} else if ( year.slice( -2 ) == "50" ) {
-				typeArray[ 5 ].push( year )
-			};
 		}
 
 		// loop through all country paths
@@ -445,6 +430,8 @@ function drawMap( error, topology, expCountries ) {
 			}
 		} );
 	}
+
+	console.log( yearsArray );
 }
 
 // highlight lng export countries
