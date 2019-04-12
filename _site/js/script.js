@@ -5,27 +5,23 @@ var pymChild = new pym.Child();
 
 // Initial Script (remove below and replace)
 
-// DEFINE VARIABLES
-// Define size of map group: full world map is 2:1 ratio
+// ***** DEFINE GLOBAL VARIABLES ***** //
+// variables for size of map group: full world map is 2:1 ratio
 var masterW = parseInt( d3.select( "#master_container" ).style( "width" ) ),
 	masterH = masterW / 2;
 
-// variables for min/max years
+// variables for min/max and total years
 var minYr = 2016,
 	maxYr = 2019;
 
 // variable for range of years as an object with multidimensional arrays
 var yearsArray = [];
 
-// function to fill in range of years (from min to max, inclusive)
-function range( start, end ) {
-	var years = Array( end - start + 1 ).fill().map( ( _, idx ) => start + idx );
-	years.forEach( function( val, index, arr ) {
-		yearsArray[ val ] = [];
-	} );
-}
-// run range function
-range( minYr, maxYr );
+// variables for loop functions
+var i = 1, // first item in sequence
+	play, // animation + speed
+	num = ( maxYr - minYr ) + 1, // number of iterations, i.e. years (to be populated with the range function)
+	m = 1; // ??? is this variable needed?
 
 // variables for catching min and max zoom factors
 var minZoom,
@@ -34,7 +30,7 @@ var minZoom,
 	countriesAll, // variable for catching all mapped countries (world)
 	highlights; // variable for catching export countries by code
 
-// color scale
+// variable for color scale
 var colors = d3.scaleOrdinal()
 	.domain( [ "country", "country-on", "labels" ] )
 	.range( [ "#FFFFFF", "#8BCC00", "#12769e" ] );
@@ -45,6 +41,148 @@ var colors = d3.scaleOrdinal()
 // Map Water Blue #e6ebed
 // Tomato #FF6347
 // Neon Blue #00eeee
+
+// ***** DEFINE GLOBAL FUNCTIONS ***** //
+// function to fill in range of years (from min to max, inclusive)
+function range( start, end ) {
+	var years = Array( end - start + 1 ).fill().map( ( _, idx ) => start + idx );
+
+	years.forEach( function( val ) {
+		yearsArray[ val ] = [];
+	} );
+}
+// run range function
+range( minYr, maxYr );
+
+// ***** FUNCTIONS TO ANIMATE BUTTONS/MAP DATA ***** //
+// function to play on initial load
+function start() {
+	console.log( "i = ", i, "num = ", num );
+	if ( play != "undefined" ) {
+		clearInterval( play );
+	};
+
+	if ( i === num ) {
+		i -= ( num );
+	};
+
+	play = setInterval( mechanic, 1000 );
+}
+
+function clickYear( e ) {
+	// swith play/pause button to play
+	if ( m === 1 ) {
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_play.png' );
+		m -= 1;
+	};
+	// clear loop variable and reset
+	clearInterval( play );
+
+	// remove active class from other year button
+	$( '.year' ).removeClass( 'activea' );
+	// add active class to this year button
+	$( this ).addClass( 'activea' );
+
+	// set i to match the button id
+	i = Number( $( this ).attr( "idnum" ) );
+
+	// RUN THE FUNCTION TO SWITCH COUNTRIES HIGHLIGHTED
+	// BuildBubbles( width );
+
+	// console.log( "you selected the year, at index: " + i );
+	// console.log( "this is m: " + m );
+}
+
+function pause() {
+	if ( m === 0 && i != num ) {
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' );
+		m += 1;
+		play = setInterval( mechanic, 1000 );
+
+		console.log( "this is m: " + m );
+	} else if ( m === 1 && i != num ) {
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_play.png' );
+		m -= 1;
+		clearInterval( play );
+
+		// console.log( 'you cleared the interval in "pause"' );
+	} else {
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' ); //restart at the beginning??
+		i = 0;
+		play = setInterval( mechanic, 1000 );
+		// console.log( 'end of loop and rebiginng' );
+
+		// here i want to reset the variables to i=0 m=0
+	}
+	// console.log( 'you hit pause at: ' + i );
+}
+
+// Function to play each cycle
+function mechanic() {
+	i += 1;
+
+	rebuildLoop( i );
+
+	if ( i === num ) {
+		console.log( "i === n", num, m );
+
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_redo.png' );
+		clearInterval( play );
+
+		// console.log( 'you cleared the interval by reaching the end of mechanic' );
+	}
+}
+
+// Function to rebuild the loop at the end of each cycle
+function rebuildLoop( i ) {
+	// Add next and next and next color to li tags
+	if ( i === 1 ) {
+		$( '.year' ).removeClass( 'activea' );
+		$( '.year:first-child' ).addClass( 'activea' )
+	} else {
+		$( '.activea' ).next().addClass( 'activea2' )
+		$( '.year' ).removeClass( 'activea' );
+		$( '.activea2' ).addClass( 'activea' );
+		$( '.activea' ).removeClass( 'activea2' );
+	};
+
+	console.log( 'rebuildloop is at: ' + i );
+}
+
+// ***** OTHER FUNCTIONS ***** //
+// Find and populate element bounds
+function getBounds( selection ) {
+	selection.each( function( d ) {
+		// d.bbox = this.getBBox();
+		d.bbox = this.getBoundingClientRect();
+	} );
+}
+
+// Find and populate element center
+function getCenter( selection ) {
+	selection.each( function( d ) {
+		d.centroid = [ path.centroid( d )[ 0 ] - 25, path.centroid( d )[ 1 ] - 5 ];
+	} );
+}
+
+function showLabelRollover( elem ) {
+	// add a mouseover action to show name label for country
+	elem.on( "mouseover", function( d, i ) {
+			d3.select( "#label-" + d.id )
+				.style( "display", "block" );
+		} )
+		.on( "mouseout", function( d, i ) {
+			d3.select( "#label-" + d.id )
+				.style( "display", "none" );
+		} );
+}
+
+// **** Add actions to buttons for each year ***** //
+// action for year buttons
+$( '.year' ).click( clickYear );
+
+// action for pause button
+$( '.rpt2' ).click( pause );
 
 // ***** DEFINE MAP + PROJECTION ***** //
 var projection = d3
@@ -142,116 +280,6 @@ $( window ).resize( function() {
 		.attr( "height", $( "#map_container" ).height() );
 	initiateZoom();
 } );
-
-// ***** ANIMATION FUNCTIONS ***** //
-// begin looping stuff
-var num = 4; // number of iterations, i.e. number of years
-var i = 1; // which year you are on when you start
-var play;
-
-var m = 1;
-
-function start() {
-	if ( play != "undefined" ) {
-		clearInterval( play );
-	};
-
-	if ( i === num ) {
-		i -= ( num );
-	};
-	play = setInterval( mechanic, 1000 );
-}
-
-function pause() {
-	if ( m === 0 && i != num ) {
-		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' );
-		m += 1;
-		play = setInterval( mechanic, 1000 );
-		// clearInterval(play);
-	} else if ( m === 1 && i != num ) {
-		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_play.png' );
-		m -= 1;
-		clearInterval( play );
-		// console.log( 'you cleared the interval in "pause"' )
-	} else {
-		// console.log( 'end of loop and restarting' )
-		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' ); //restart at the beginning??
-		i = 0;
-		play = setInterval( mechanic, 1000 );
-		// here i want to reset the variables to i=0 m=0
-	}
-	// console.log( 'you hit pause at: ' + i )
-}
-
-// what to do each iteration
-function mechanic() {
-	i += 1;
-	rebuildLoop( i );
-	if ( i === num ) {
-		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_redo.png' );
-		clearInterval( play );
-		// console.log( 'you cleared the interval by reaching the end of mechanic' )
-	}
-}
-
-function rebuildLoop( i ) {
-	// convaluted way to add next and next and next color to list.
-	if ( i === 1 ) {
-		$( '.year' ).removeClass( 'activea' );
-		$( '.year:first-child' ).addClass( 'activea' )
-	} else {
-		$( '.activea' ).next().addClass( 'activea2' )
-		$( '.year' ).removeClass( 'activea' );
-		$( '.activea2' ).addClass( 'activea' );
-		$( '.activea' ).removeClass( 'activea2' );
-	};
-
-	// console.log( 'rebuildloop is at: ' + i )
-}
-
-// initial run
-// resize();
-// start();
-
-// d3.select( window ).on( 'resize', resize );
-// $( '.rpt2' ).click( function( e ) {
-// 	pause();
-// } );
-
-// Do something on keystroke of escape....escape == 27.
-// $( document ).keyup( function( e ) {
-// 	if ( e.keyCode == 27 ) {
-// 		d3.selectAll( ".tool" ).remove();
-// 	}
-// } );
-
-// ***** OTHER FUNCTIONS ***** //
-// Find and populate element bounds
-function getBounds( selection ) {
-	selection.each( function( d ) {
-		// d.bbox = this.getBBox();
-		d.bbox = this.getBoundingClientRect();
-	} );
-}
-
-// Find and populate element center
-function getCenter( selection ) {
-	selection.each( function( d ) {
-		d.centroid = [ path.centroid( d )[ 0 ] - 25, path.centroid( d )[ 1 ] - 5 ];
-	} );
-}
-
-function showLabelRollover( elem ) {
-	// add a mouseover action to show name label for country
-	elem.on( "mouseover", function( d, i ) {
-			d3.select( "#label-" + d.id )
-				.style( "display", "block" );
-		} )
-		.on( "mouseout", function( d, i ) {
-			d3.select( "#label-" + d.id )
-				.style( "display", "none" );
-		} );
-}
 
 // ***** DRAW SVG ***** //
 // create an SVG
@@ -371,6 +399,7 @@ function drawMap( error, topology, expCountries ) {
 			}
 		}
 
+		// **************** START OF HIGHLIGHTS
 		// loop through all country paths
 		highlights.each( function() {
 			// select each path element
@@ -379,7 +408,7 @@ function drawMap( error, topology, expCountries ) {
 			if ( this.id == key ) {
 				// console.log( this.id + " SAME AS " + key );
 
-				// if match, change color
+				// if ID == KEY, change color
 				colorChange.style( "fill", function() {
 					// use color scale variable
 					return colors( "country-on" );
@@ -405,7 +434,7 @@ function drawMap( error, topology, expCountries ) {
 					} )
 					.call( getBounds );
 
-				// move background rect to match
+				// move background rect to match center
 				var box = d3.select( this )
 					.select( ".labelBg" )
 					.attr( "width", function( d ) {
@@ -423,139 +452,23 @@ function drawMap( error, topology, expCountries ) {
 					.attr( "y", function( d ) {
 						return d.bbox.height / 2;
 					} );
-				// need to move box to align with text
-				//.attr("transform", function() {
-				// return "translate(" + tip_text + ")";
-				// })
 			}
 		} );
 	}
 
-	console.log( yearsArray );
+	// initial run
+	start();
+
+	/*d3.select( window ).on( 'resize', resize );
+	$( '.rpt2' ).click( function( e ) {
+		pause();
+	} );*/
+
+	// Do something on keystroke of escape....escape == 27.
+	$( document ).keyup( function( e ) {
+		if ( e.keyCode == 27 ) {
+			d3.selectAll( ".tool" ).remove();
+		}
+	} );
+	console.log( "YEARS + COUNTRIES", yearsArray );
 }
-
-// highlight lng export countries
-// d3.json( countriesUrl,
-// 	function( error, expCountries ) {
-// 		if ( error ) throw error;
-
-// 		// console.log( expCountries );
-
-// 		var highlights = svg.select( "#countries" )
-// 			.selectAll( ".country" );
-// 			// .data ( expCountries )
-
-// 		highlights.each( function() {
-// 				d3.select( this );
-// 				console.log( this.id );
-// 				// for ( var key in d ) {
-// 				// 	console.log ( key );
-
-// 				// 	if ( this.id == key ) {
-// 				// 		console.log( this.id + " SAME AS " + key )
-// 				// 	};
-// 				// }
-// 			});
-
-// 		// // highlights.selectAll( "path" ).selectAll( ".country" );
-//   //   		// .each( function() { this.__data__ = { id: this.id }; } );
-//   //   		// .data( expCountries/*, function( d, i ) {
-//   //   			for ( var key in d ) {
-//   //   				return d[key];
-//   //   			};
-//   //   			// console.log( d[key] );
-//   //   		// } */);
-//   //   		// .text( function(d) { return d.text; } );
-
-// 		// for ( var key in expCountries ) {
-// 		// 	// console.log( "#" + key );
-// 		// }
-
-// 		// console.log( highlights );
-
-// 		// console.log( "LABELS", d3.keys(expCountries) );
-// 			// .attr("transform", function(d) {
-// 			// 	return (
-// 			// 		"translate(" + path.centroid(d)[0] + "," + path.centroid(d)[1] + ")"
-// 			// 	);
-// 			// })
-
-// 			// add mouseover functionality to the label
-// 			.on("mouseover", function(d, i) {
-// 				d3.select(this).style("display", "block");
-// 			})
-// 			.on("mouseout", function(d, i) {
-// 				d3.select(this).style("display", "none");
-// 			})
-// 			// add an onlcick action to zoom into clicked country
-// 			.on("click", function(d, i) {
-// 				d3.selectAll(".country").classed("country-on", false);
-// 				d3.select("#country" + d.world.geometries.id).classed("country-on", true);
-// 				boxZoom(path.bounds(d), path.centroid(d), 20);
-// 			});
-// 		// add the text to the label group showing country name
-// 		// countryLabels
-// 		// 	.append("text")
-// 		// 	.attr("class", "countryName")
-// 		// 	.style("text-anchor", "middle")
-// 		// 	.attr("dx", 0)
-// 		// 	.attr("dy", 0)
-// 		// 	.text(function(d) {
-// 		// 		return d.countryName;
-// 		// 	})
-// 		// 	.call(getBounds);
-// 		/*// add a background rectangle the same size as the text
-// 		countryLabels
-// 			.insert("rect", "text")
-// 			.attr("class", "countryLabelBg")
-// 			.attr("transform", function(d) {
-// 				return "translate(" + (d.bbox.x - 2) + "," + d.bbox.y + ")";
-// 			})
-// 			.attr("width", function(d) {
-// 				return d.bbox.width + 4;
-// 			})
-// 			.attr("height", function(d) {
-// 				return d.bbox.height;
-// 			});*/
-
-// 		/*//Bind data and create one path per geoData feature
-// 		countriesAll = svg.append("g").attr("id", "map");
-// 		// add a background rectangle
-// 		countriesAll
-// 			.append("rect")
-// 			.attr("x", 0)
-// 			.attr("y", 0)
-// 			.attr("width", masterW)
-// 			.attr("height", masterH);
-
-// 		// draw a path for each feature/country
-// 		world = countriesAll
-// 			.selectAll("path")
-// 			.data(geoData)
-// 			.enter()
-// 			.append("path")
-// 			.attr("d", path)
-// 			.attr("id", function(d, i) {
-// 				return "country" + d.id;
-// 				console.log(d.id);
-// 			})
-// 			.attr("class", "country")
-// 			//      .attr("stroke-width", 10)
-// 			//      .attr("stroke", "#ff0000")
-// 			// add a mouseover action to show name label for feature/country
-// 			.on("mouseover", function(d, i) {
-// 				d3.select("#countryLabel" + d.id).style("display", "block");
-// 			})
-// 			.on("mouseout", function(d, i) {
-// 				d3.select("#countryLabel" + d.id).style("display", "none");
-// 			})
-// 			// add an onclick action to zoom into clicked country
-// 			.on("click", function(d, i) {
-// 				d3.selectAll(".country").classed("country-on", false);
-// 				d3.select(this).classed("country-on", true);
-// 				boxZoom(path.bounds(d), path.centroid(d), 20);
-// 			});
-
-// 		initiateZoom();
-// */	}
-// );
