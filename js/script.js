@@ -18,10 +18,10 @@ var minYr = 2016,
 var yearsArray = [];
 
 // variables for loop functions
-var i = 1, // first item in sequence
+var l = 1, // first item in sequence
 	play, // animation + speed
 	num = ( maxYr - minYr ) + 1, // number of iterations, i.e. years (to be populated with the range function)
-	m = 1; // ??? is this variable needed?
+	m = 1; // play/pause variable
 
 // variables for catching min and max zoom factors
 var minZoom,
@@ -57,13 +57,14 @@ range( minYr, maxYr );
 // ***** FUNCTIONS TO ANIMATE BUTTONS/MAP DATA ***** //
 // function to play on initial load
 function start() {
-	console.log( "i = ", i, "num = ", num );
+	console.log( "START: l = ", l, "num = ", num );
+
 	if ( play != "undefined" ) {
 		clearInterval( play );
 	};
 
-	if ( i === num ) {
-		i -= ( num );
+	if ( l === num ) {
+		l -= ( num );
 	};
 
 	play = setInterval( mechanic, 1000 );
@@ -83,48 +84,48 @@ function clickYear( e ) {
 	// add active class to this year button
 	$( this ).addClass( 'activea' );
 
-	// set i to match the button id
-	i = Number( $( this ).attr( "idnum" ) );
+	// set l to match the button id
+	l = Number( $( this ).attr( "idnum" ) );
 
-	// RUN THE FUNCTION TO SWITCH COUNTRIES HIGHLIGHTED
-	// BuildBubbles( width );
+	// RUN THE FUNCTION TO SWITCH COUNTRIES HIGHLIGHTED HERE
 
-	// console.log( "you selected the year, at index: " + i );
+	console.log( "you clicked the year at index: " + l + " num = " + num );
 	// console.log( "this is m: " + m );
 }
 
 function pause() {
-	if ( m === 0 && i != num ) {
+	if ( /*m === 0 &&*/ l != num ) {
 		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' );
 		m += 1;
 		play = setInterval( mechanic, 1000 );
 
 		console.log( "this is m: " + m );
-	} else if ( m === 1 && i != num ) {
+	} else if ( m === 1 && l != num ) {
 		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_play.png' );
 		m -= 1;
 		clearInterval( play );
 
 		// console.log( 'you cleared the interval in "pause"' );
 	} else {
-		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' ); //restart at the beginning??
-		i = 0;
+		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' );
+		l = 0;
 		play = setInterval( mechanic, 1000 );
-		// console.log( 'end of loop and rebiginng' );
+
+		console.log( 'end of loop' );
 
 		// here i want to reset the variables to i=0 m=0
 	}
-	// console.log( 'you hit pause at: ' + i );
+	console.log( 'you hit pause at: ' + i );
 }
 
 // Function to play each cycle
 function mechanic() {
-	i += 1;
+	l += 1;
 
-	rebuildLoop( i );
+	rebuildLoop( l );
 
-	if ( i === num ) {
-		console.log( "i === n", num, m );
+	if ( l === num ) {
+		console.log( "l === num" );
 
 		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_redo.png' );
 		clearInterval( play );
@@ -134,9 +135,9 @@ function mechanic() {
 }
 
 // Function to rebuild the loop at the end of each cycle
-function rebuildLoop( i ) {
+function rebuildLoop( l ) {
 	// Add next and next and next color to li tags
-	if ( i === 1 ) {
+	if ( l === 1 ) {
 		$( '.year' ).removeClass( 'activea' );
 		$( '.year:first-child' ).addClass( 'activea' )
 	} else {
@@ -146,7 +147,7 @@ function rebuildLoop( i ) {
 		$( '.activea' ).removeClass( 'activea2' );
 	};
 
-	console.log( 'rebuildloop is at: ' + i );
+	console.log( 'rebuildloop is at: ' + l );
 }
 
 // ***** OTHER FUNCTIONS ***** //
