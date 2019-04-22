@@ -14,14 +14,18 @@ var masterW = parseInt( d3.select( "#master_container" ).style( "width" ) ),
 var minYr = 2016,
 	maxYr = 2019;
 
-// variable for range of years as an object with multidimensional arrays
-var yearsArray = [];
+// variables for range of years
+var years,
+	yearsArray = []; // object with multidimensional arrays listing countries/yr
 
 // variables for loop functions
 var l = 1, // first item in sequence
 	play, // animation + speed
 	num = ( maxYr - minYr ) + 1, // number of iterations, i.e. years (to be populated with the range function)
-	m = 1; // play/pause variable
+	m = 1, // play/pause variable
+	thisYr = minYr; // current year variable for animation
+
+console.log( "thisYr on enter:", thisYr );
 
 // variables for catching min and max zoom factors
 var minZoom,
@@ -45,7 +49,7 @@ var colors = d3.scaleOrdinal()
 // ***** DEFINE GLOBAL FUNCTIONS ***** //
 // function to fill in range of years (from min to max, inclusive)
 function range( start, end ) {
-	var years = Array( end - start + 1 ).fill().map( ( _, idx ) => start + idx );
+	years = Array( end - start + 1 ).fill().map( ( _, idx ) => start + idx );
 
 	years.forEach( function( val ) {
 		yearsArray[ val ] = [];
@@ -57,7 +61,7 @@ range( minYr, maxYr );
 // ***** FUNCTIONS TO ANIMATE BUTTONS/MAP DATA ***** //
 // function to play on initial load
 function start() {
-	console.log( "START: l = ", l, "num = ", num );
+	// console.log( "START: l = ", l, "num = ", num );
 
 	if ( play != "undefined" ) {
 		clearInterval( play );
@@ -68,6 +72,9 @@ function start() {
 	};
 
 	play = setInterval( mechanic, 1000 );
+	// console.log( "thisYr on start:", thisYr );
+
+	changeColor( thisYr );
 }
 
 function clickYear( e ) {
@@ -87,19 +94,20 @@ function clickYear( e ) {
 	// set l to match the button id
 	l = Number( $( this ).attr( "idnum" ) );
 
-	// RUN THE FUNCTION TO SWITCH COUNTRIES HIGHLIGHTED HERE
+	// set thisYr to the button datayear
+	thisYr = Number( $( this ).attr( "datayear" ) );
+	// console.log( "thisYr on enter:", thisYr );
 
-	console.log( "you clicked the year at index: " + l + " num = " + num );
-	// console.log( "this is m: " + m );
+	// RUN THE FUNCTION TO SWITCH COUNTRIES HIGHLIGHTED HERE
+	changeColor( thisYr );
 }
 
 function pause() {
-	if ( /*m === 0 &&*/ l != num ) {
+	if ( m === 0 && l != num ) {
 		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_pause.png' );
 		m += 1;
 		play = setInterval( mechanic, 1000 );
 
-		console.log( "this is m: " + m );
 	} else if ( m === 1 && l != num ) {
 		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_play.png' );
 		m -= 1;
@@ -111,11 +119,8 @@ function pause() {
 		l = 0;
 		play = setInterval( mechanic, 1000 );
 
-		console.log( 'end of loop' );
-
-		// here i want to reset the variables to i=0 m=0
+		// console.log( 'end of loop' );
 	}
-	console.log( 'you hit pause at: ' + i );
 }
 
 // Function to play each cycle
@@ -125,12 +130,8 @@ function mechanic() {
 	rebuildLoop( l );
 
 	if ( l === num ) {
-		console.log( "l === num" );
-
 		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_redo.png' );
 		clearInterval( play );
-
-		// console.log( 'you cleared the interval by reaching the end of mechanic' );
 	}
 }
 
@@ -139,15 +140,44 @@ function rebuildLoop( l ) {
 	// Add next and next and next color to li tags
 	if ( l === 1 ) {
 		$( '.year' ).removeClass( 'activea' );
-		$( '.year:first-child' ).addClass( 'activea' )
+		$( '.year:first-child' ).addClass( 'activea' );
+		// console.log( "-------thisYr on reset:", thisYr );
 	} else {
-		$( '.activea' ).next().addClass( 'activea2' )
+		$( '.activea' ).next().addClass( 'activea2' );
 		$( '.year' ).removeClass( 'activea' );
 		$( '.activea2' ).addClass( 'activea' );
 		$( '.activea' ).removeClass( 'activea2' );
+		// console.log( "thisYr on switch:", thisYr );
 	};
+	// console.log( 'rebuildloop is at: ' + l );
 
-	console.log( 'rebuildloop is at: ' + l );
+	// set thisYr to the active button datayear
+	thisYr = Number( $( ".activea" ).attr( "datayear" ) );
+	// pass year variable to highlight countries
+	changeColor( thisYr );
+}
+
+function changeColor( thisYr ) {
+	// reset fill color to default for all countries first
+	highlights.style( "fill", function() {
+		// use color scale variable
+		return colors( "country" );
+	} );
+
+	// select subarray based on current year variable
+	var yrCountries = yearsArray[ thisYr ];
+
+	// loop through that year's array and pass country code
+	yrCountries.forEach( function( code ) {
+		// select country path by id using code
+		var colorChange = d3.select( "#" + code );
+
+		// change fill color for selected path
+		colorChange.style( "fill", function() {
+			// use color scale variable
+			return colors( "country-on" );
+		} );
+	} );
 }
 
 // ***** OTHER FUNCTIONS ***** //
@@ -182,7 +212,7 @@ function showLabelRollover( elem ) {
 // action for year buttons
 $( '.year' ).click( clickYear );
 
-// action for pause button
+// action for play/pause button
 $( '.rpt2' ).click( pause );
 
 // ***** DEFINE MAP + PROJECTION ***** //
@@ -401,21 +431,21 @@ function drawMap( error, topology, expCountries ) {
 		}
 
 		// **************** START OF HIGHLIGHTS
-		// loop through all country paths
-		highlights.each( function() {
-			// select each path element
-			var colorChange = d3.select( this );
-			// compare path element id to export country keys
-			if ( this.id == key ) {
-				// console.log( this.id + " SAME AS " + key );
+		/*		// loop through all country paths
+				highlights.each( function() {
+					// select each path element
+					var colorChange = d3.select( this );
+					// compare path element id to export country keys
+					if ( this.id == key ) {
+						console.log( this.id + " SAME AS " + key );
 
-				// if ID == KEY, change color
-				colorChange.style( "fill", function() {
-					// use color scale variable
-					return colors( "country-on" );
-				} );
-			};
-		} );
+						// if ID == KEY, change color
+						colorChange.style( "fill", function() {
+							// use color scale variable
+							return colors( "country-on" );
+						} );
+					};
+				} );*/
 
 		// loop through country labels and text for name
 		names.each( function( d ) {
@@ -471,5 +501,4 @@ function drawMap( error, topology, expCountries ) {
 			d3.selectAll( ".tool" ).remove();
 		}
 	} );
-	console.log( "YEARS + COUNTRIES", yearsArray );
 }
