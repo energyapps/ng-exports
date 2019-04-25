@@ -47,27 +47,31 @@ Map
 	background-color: #ddd;
 }
 
+#pre_content {
+	margin: 0 0.5rem 1rem;
+	padding-top: 1rem;
+}
+
 #pre_content h2 {
+	font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif;
 	font-size: 1.875rem;
-	padding-top: 5px;
-	padding-left: 5px;
-	color: #333;
 	line-height: 2rem;
+	padding: 0.5rem 0.5rem 0;
 }
 
 #pre_content h3 {
+	font-family: "Avenir LT W02 35 Medium", verdana, sans-serif;
 	font-size: 1.25rem;
-	padding-top: 5px;
-	padding-left: 5px;
-	color: #333;
 	line-height: 1.25rem;
+	margin-bottom: 0.5rem;
+	padding: 0.25rem 0.5rem 0;
+	text-transform: none;
 }
 
 #pre_content p {
-	font-size: .875rem;
-	padding-top: 5px;
-	padding-left: 5px;
-	color: #333;
+	font-family: "Avenir LT W02 65 Light", verdana, sans-serif;
+	font-size: .7rem;
+	padding: 0.5rem 0.5rem 0;
 	line-height: 1.25rem;
 	margin: 0;
 	padding-bottom: 0 !important;

@@ -11,8 +11,8 @@ var masterW = parseInt( d3.select( "#master_container" ).style( "width" ) ),
 	masterH = masterW / 2;
 
 // variables for min/max and total years
-var minYr = 2016,
-	maxYr = 2019;
+var minYr = 2015,
+	maxYr = 2018;
 
 // variables for range of years
 var years,
@@ -25,7 +25,8 @@ var l = 1, // first item in sequence
 	m = 1, // play/pause variable
 	thisYr = minYr; // current year variable for animation
 
-console.log( "thisYr on enter:", thisYr );
+// variables for changing text
+var totalDiv = document.getElementById( "totalDiv" );
 
 // variables for catching min and max zoom factors
 var minZoom,
@@ -180,6 +181,18 @@ function changeColor( thisYr ) {
 	} );
 }
 
+function showLabelRollover( elem ) {
+	// add a mouseover action to show name label for country
+	elem.on( "mouseover", function( d ) {
+			d3.select( "#label-" + d.id )
+				.style( "display", "block" );
+		} )
+		.on( "mouseout", function( d ) {
+			d3.select( "#label-" + d.id )
+				.style( "display", "none" );
+		} );
+}
+
 // ***** OTHER FUNCTIONS ***** //
 // Find and populate element bounds
 function getBounds( selection ) {
@@ -194,18 +207,6 @@ function getCenter( selection ) {
 	selection.each( function( d ) {
 		d.centroid = [ path.centroid( d )[ 0 ] - 25, path.centroid( d )[ 1 ] - 5 ];
 	} );
-}
-
-function showLabelRollover( elem ) {
-	// add a mouseover action to show name label for country
-	elem.on( "mouseover", function( d, i ) {
-			d3.select( "#label-" + d.id )
-				.style( "display", "block" );
-		} )
-		.on( "mouseout", function( d, i ) {
-			d3.select( "#label-" + d.id )
-				.style( "display", "none" );
-		} );
 }
 
 // **** Add actions to buttons for each year ***** //
@@ -429,23 +430,6 @@ function drawMap( error, topology, expCountries ) {
 				}
 			}
 		}
-
-		// **************** START OF HIGHLIGHTS
-		/*		// loop through all country paths
-				highlights.each( function() {
-					// select each path element
-					var colorChange = d3.select( this );
-					// compare path element id to export country keys
-					if ( this.id == key ) {
-						console.log( this.id + " SAME AS " + key );
-
-						// if ID == KEY, change color
-						colorChange.style( "fill", function() {
-							// use color scale variable
-							return colors( "country-on" );
-						} );
-					};
-				} );*/
 
 		// loop through country labels and text for name
 		names.each( function( d ) {
