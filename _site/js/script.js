@@ -10,7 +10,7 @@ var pymChild = new pym.Child();
 var masterW = parseInt( d3.select( "#master_container" ).style( "width" ) ),
 	masterH = masterW / 2;
 
-// variables for min/max and total years
+// variables for min/max years
 var minYr = 2015,
 	maxYr = 2018;
 
@@ -23,7 +23,8 @@ var l = 1, // first item in sequence
 	play, // animation + speed
 	num = ( maxYr - minYr ) + 1, // number of iterations, i.e. years (to be populated with the range function)
 	m = 1, // play/pause variable
-	thisYr = minYr; // current year variable for animation
+	thisYr = minYr, // current year variable for animation
+	prevYr = thisYr - 1;
 
 // variables for changing text
 var totalDiv = document.getElementById( "totalDiv" );
@@ -56,6 +57,7 @@ function range( start, end ) {
 		yearsArray[ val ] = [];
 	} );
 }
+
 // run range function
 range( minYr, maxYr );
 
@@ -97,7 +99,7 @@ function clickYear( e ) {
 
 	// set thisYr to the button datayear
 	thisYr = Number( $( this ).attr( "datayear" ) );
-	// console.log( "thisYr on enter:", thisYr );
+	prevYr = thisYr - 1;
 
 	// RUN THE FUNCTION TO SWITCH COUNTRIES HIGHLIGHTED HERE
 	changeColor( thisYr );
@@ -130,6 +132,7 @@ function mechanic() {
 
 	rebuildLoop( l );
 
+	// when cycle reaches the end, change the play/pause button to replay
 	if ( l === num ) {
 		$( '.rpt2 span img' ).attr( 'src', 'img/mediaButtons_redo.png' );
 		clearInterval( play );
@@ -154,6 +157,7 @@ function rebuildLoop( l ) {
 
 	// set thisYr to the active button datayear
 	thisYr = Number( $( ".activea" ).attr( "datayear" ) );
+	prevYr = thisYr - 1;
 	// pass year variable to highlight countries
 	changeColor( thisYr );
 }
@@ -166,14 +170,35 @@ function changeColor( thisYr ) {
 	} );
 
 	// select subarray based on current year variable
-	var yrCountries = yearsArray[ thisYr ];
+	var yrCountries = yearsArray[ thisYr ], // list of countries in current year
+		currentTotal = yrCountries.length; // sum of all countries in current year
 
-	// loop through that year's array and pass country code
+	totalDiv.innerHTML = '<h2>U.S. natural gas exports in <span class="blueText">' + thisYr + '</span></h2><h4>Distributed to <span id="total" class="box">' + currentTotal + '</span> total countries</h4><h5 id="diff"></h5>';
+
+	if ( prevYr >= minYr ) {
+		prevCountries = yearsArray[ prevYr ]; // list countries in previous year
+		prevTotal = prevCountries.length; // sum of all countries in previous year
+		change = currentTotal - prevTotal; // change in total from prev year
+
+		if ( change > 0 ) {
+			$( '#diff' ).html( '<span id="change" class="blueText">' + change + '</span> more countries than the previous year' );
+			$( '#total' ).removeClass( 'redBox' );
+			$( '#total' ).addClass( 'greenBox' );
+		} else if ( change < 0 ) {
+			$( '#diff' ).html( '<span id="change" class="blueText">' + change + '</span> lmore countries than the previous year' );
+			$( '#total' ).removeClass( 'greenBox' );
+			$( '#total' ).addClass( 'redBox' );
+		} else {
+			$( '#diff' ).text( 'No change since the previous year' );
+		}
+	}
+
+	// loop through that year's array and pass country codes
 	yrCountries.forEach( function( code ) {
-		// select country path by id using code
+		// select country paths by id using code
 		var colorChange = d3.select( "#" + code );
 
-		// change fill color for selected path
+		// change fill color for selected paths
 		colorChange.style( "fill", function() {
 			// use color scale variable
 			return colors( "country-on" );
@@ -184,8 +209,15 @@ function changeColor( thisYr ) {
 function showLabelRollover( elem ) {
 	// add a mouseover action to show name label for country
 	elem.on( "mouseover", function( d ) {
-			d3.select( "#label-" + d.id )
-				.style( "display", "block" );
+			// pass the country code for each country in a given year
+			yearsArray[ thisYr ].forEach( function( val ) {
+				// compare the label id to country code
+				if ( d.id == val ) {
+					// show the label if the id and code match
+					d3.select( "#label-" + d.id )
+						.style( "display", "block" );
+				}
+			} );
 		} )
 		.on( "mouseout", function( d ) {
 			d3.select( "#label-" + d.id )
@@ -213,7 +245,7 @@ function getCenter( selection ) {
 // action for year buttons
 $( '.year' ).click( clickYear );
 
-// action for play/pause button
+// action for play/pause/replay button
 $( '.rpt2' ).click( pause );
 
 // ***** DEFINE MAP + PROJECTION ***** //
