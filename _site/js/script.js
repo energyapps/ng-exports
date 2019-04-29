@@ -10,6 +10,12 @@ var pymChild = new pym.Child();
 var masterW = parseInt( d3.select( "#master_container" ).style( "width" ) ),
 	masterH = masterW / 2;
 
+// variable to append title to master div
+var mapTitle = d3
+	.select( ".title" )
+	.attr( "class", "title" )
+	.text( "Countries receiving U.S. natural gas exports" );
+
 // variables for min/max years
 var minYr = 2015,
 	maxYr = 2018;

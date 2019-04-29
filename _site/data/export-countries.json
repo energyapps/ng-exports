@@ -27,7 +27,7 @@
 	"CAN": {
 		"countryName": "Canada",
 		"lngYear": "2018, 2017, 2016, 2015, 2014, 2013",
-		"notes": "Canada also receives natural gas exports from the U.S. via pipelines and as compressed natural gas (CNG)."
+		"notes": "U.S. natural gas is exported to Canada as liquefied natural gas (LNG) via pipelines and by truck and also as compressed natural gas (CNG) in high-pressure containers."
 	},
 	"CHL": {
 		"countryName": "Chile",
@@ -117,7 +117,7 @@
 	"MEX": {
 		"countryName": "Mexico",
 		"lngYear": "2018, 2017, 2016, 2015, 2014, 2013",
-		"notes": "Mexico also receives natural gas exports from the U.S. via pipelines."
+		"notes": "U.S. liquefied natural gas (LNG) is exported to Mexico via pipelines as well as by both vessel and truck."
 	},
 	"NLD": {
 		"countryName": "Netherlands",

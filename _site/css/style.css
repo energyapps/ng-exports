@@ -7,25 +7,42 @@
 ********************************************/
 
 /*+++++++++++++++++++++++++++
+Title
+++++++++++++++++++++++++++++++++++++++*/
+#master_title {
+	background-color: #e6ebed;
+	border-top: #333 1px solid;
+	border-right: #333 1px solid;
+	border-left: #333 1px solid;
+	clear: both;
+	margin-left: 1rem;
+	max-width: 50%;
+	overflow: visible;
+	padding: 0.5rem 1rem;
+	position: relative;
+	width: calc(40% - 2rem);
+}
+
+.title {
+	color: #000 !important;
+	font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif;
+	font-size: 1rem;
+	text-transform: none !important;
+}
+
+/*+++++++++++++++++++++++++++
 Map
 ++++++++++++++++++++++++++++++++++++++*/
 #dis1 {
-	background-color: #ddd;    /*position: absolute;*/
+	background-color: #ddd;
 }
 
 #master_container {
-	font-family: 'Avenir LT W02 35 Light', verdana, sans-serif;
-	text-transform: none !important;
-	position: relative;	/*height: 800px;*/
-	position: relative;
-	font-size: .75rem;
 	background-color: #ddd;
-	margin: 0;
-	padding-bottom: 55%;
-	width: 100%;
 	max-width: 1000px;
-	overflow: visible;
-	clear: both;
+	padding-bottom: 51%;
+	position: relative;
+	width: 100%;
 }
 
 /******************************** FALLBACK IMAGE ********************************/
@@ -70,7 +87,7 @@ Map
 
 #pre_content p {
 	font-family: "Avenir LT W02 65 Light", verdana, sans-serif;
-	font-size: .7rem;
+	font-size: 0.7rem;
 	padding: 0.5rem 0.5rem 0;
 	line-height: 1.25rem;
 	margin: 0;
@@ -80,25 +97,39 @@ Map
 }
 
 #post_content {
+	height: 100%;
+	max-width: 1000px;
+	min-height: 50px;
 	position: relative;
-	width: 60%;
-	font-size: 10px;
-	padding-bottom: 5px;
-	padding-left: 5px;
-	color: #646464;
-	line-height: .75rem;
-	margin: 0;
-	padding-bottom: 0 !important;
-	border-bottom: none !important;
-	margin-bottom: 0 !important;
+	width: 100%;
 }
 
-#attribution {
+#post_content p {
+	color: #646464;
+	font-family: "Avenir LT W02 65 Light", verdana, sans-serif;
+	font-size: 0.6rem;
+	line-height: 0.9rem;
+	margin: 0.5rem 10rem 0 1rem;
+}
+
+#post_content a {
+	font-family: "Avenir LT W02 65 Light", verdana, sans-serif;
+	font-style: italic;
+	font-weight: 100;
+	text-decoration: underline;
+}
+
+.attribution {
+	color: #000;
+	font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif;
+	text-transform: uppercase;
+}
+
+#fold img {
+	z-index: 100;
 	position: absolute;
-	bottom: -20px;
-	padding-left: 5px;
-	border-bottom: none !important;
-	color: #333 !important;
+	top: -10px;
+	right: 0;
 }
 
 /******************************** MAP ********************************/
@@ -383,10 +414,10 @@ font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif !important;
 @media (max-width: 870px;
 
 ) {
-	#fold img {
-		bottom: -35px;
-	}
 
+	/*#fold img {
+		bottom: -35px;
+	}*/
 }
 
 @media (max-width:800px) {
