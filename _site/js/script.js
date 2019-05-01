@@ -269,7 +269,7 @@ var path = d3
 
 // ***** ZOOM FUNCTIONS ***** //
 // Function to apply zoom to countriesAll
-function zoomed() {
+/*function zoomed() {
 	t = d3
 		.event
 		.transform;
@@ -339,7 +339,7 @@ function boxZoom( box, centroid, paddingPerc ) {
 			zoom.transform,
 			d3.zoomIdentity.translate( dleft, dtop ).scale( zoomScale )
 		);
-}
+}*/
 
 // on window resize
 $( window ).resize( function() {
@@ -348,7 +348,7 @@ $( window ).resize( function() {
 	svg
 		.attr( "width", $( "#map_container" ).width() )
 		.attr( "height", $( "#map_container" ).height() );
-	initiateZoom();
+	// initiateZoom();
 } );
 
 // ***** DRAW SVG ***** //
@@ -361,7 +361,7 @@ var svg = d3
 	.attr( "width", $( "#map_container" ).width() )
 	.attr( "height", $( "#map_container" ).height() )
 	// add zoom functionality
-	.call( zoom );
+	// .call( zoom );
 
 // get map data
 var topoUrl = "data/world-topo.json"; // full world map
