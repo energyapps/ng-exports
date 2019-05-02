@@ -16,7 +16,7 @@ Title
 	border-left: #333 1px solid;
 	clear: both;
 	margin-left: 1rem;
-	max-width: 50%;
+	max-width: calc(80% - 2rem);
 	overflow: visible;
 	padding: 0.5rem 1rem;
 	position: relative;
@@ -40,6 +40,7 @@ Map
 #master_container {
 	background-color: #ddd;
 	max-width: 1000px;
+	overflow: hidden;
 	padding-bottom: 51%;
 	position: relative;
 	width: 100%;
@@ -87,19 +88,19 @@ Map
 
 #pre_content p {
 	font-family: "Avenir LT W02 65 Light", verdana, sans-serif;
-	font-size: 0.7rem;
-	padding: 0.5rem 0.5rem 0;
-	line-height: 1.25rem;
+	font-size: 0.9rem;
+	line-height: 1.85rem;
 	margin: 0;
+	margin-bottom: .5rem !important;
+	padding: 0.5rem 0.5rem 0;
 	padding-bottom: 0 !important;
 	border-bottom: none !important;
-	margin-bottom: .5rem !important;
 }
 
 #post_content {
 	height: 100%;
 	max-width: 1000px;
-	min-height: 50px;
+	min-height: 60px;
 	position: relative;
 	width: 100%;
 }
@@ -107,8 +108,8 @@ Map
 #post_content p {
 	color: #646464;
 	font-family: "Avenir LT W02 65 Light", verdana, sans-serif;
-	font-size: 0.6rem;
-	line-height: 0.9rem;
+	font-size: 0.7rem;
+	line-height: 0.95rem;
 	margin: 0.5rem 10rem 0 1rem;
 }
 
@@ -125,10 +126,14 @@ Map
 	text-transform: uppercase;
 }
 
+#fold {
+	margin-bottom: 1rem;
+}
+
 #fold img {
 	z-index: 100;
 	position: absolute;
-	top: -10px;
+	bottom: 0;
 	right: 0;
 }
 
@@ -167,19 +172,20 @@ Map
 	min-height: 6.875rem;
 	padding-left: 1rem;
 	position: relative;
-	width: 50%;
+	width: 40%;
 }
 
 .my-legend {
 	bottom: 1.5rem;
-	position: absolute;	/*min-height: 6rem;*/
+	position: absolute;
+	width: calc(100% - 2rem);
 }
 
 .my-legend .legend-title {
 	color: #444;
 	font-family: 'Avenir LT W02 35 Light', verdana, sans-serif;
-	font-size: .875rem;
-	padding-bottom: 0.25rem;
+	font-size: 1rem;
+	padding-bottom: 0.5rem;
 }
 
 .my-legend .legend-scale ul {
@@ -192,20 +198,20 @@ Map
 
 .my-legend .legend-scale ul li {
 	background-color: #F2F2F2;
-	border-left: 1px solid #fff;
-	border-bottom: 1px solid #fff;
 	border-top: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+	border-left: 1px solid #fff;
 	color: #444;
 	cursor: pointer;
 	display: block;
 	float: left;
-	font-family: "Avenir LT W02 35 Light", verdana, sans-serif;
+	font-family: "Avenir LT W02 35 Medium", verdana, sans-serif;
 	font-size: 1rem;
 	list-style: none;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	text-align: center;
-	width: 50px;
+	width: 60px;
 }
 
 .my-legend .legend-scale ul li:hover {
@@ -237,86 +243,12 @@ Map
 	color: #777;
 }
 
-.my-legend {
-	width: 100%;
-}
-
 .buttonsi {
 	padding: 0 !important;
 }
 
 .buttonsi:hover {
 	background-color: #F2F2F2 !important;
-}
-
-.legend circle {
-
-	/*consider making a square instead*/
-	fill: none;
-	stroke: #fff;
-}
-
-.legend text {
-	fill: #777;
-	font-size: .625rem;
-	text-anchor: middle;
-}
-
-/*#tooltip {
-line-height: 1;
-font-weight: 700;
-padding: .75rem;
-fill: #fff;
-fill-opacity: .8;
-border-radius: 2px;
-stroke-width: 1px;
-stroke: #333;
-}
-
-.tip-text {
-fill: #333;
-font-size: 1rem;
-font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif;
-text-anchor: middle;
-letter-spacing: 1px;
-}
-
-.tip-text2 {
-fill: #333;
-font-size: .875rem;
-font-family: "Avenir LT W02 35 Light", verdana, sans-serif;
-text-anchor: middle;
-}
-
-.tip-text3 {
-fill: #333;
-font-size: .875rem;
-font-family: "Avenir LT W02 35 Light", verdana, sans-serif;
-text-anchor: middle;
-}
-
-.closer {
-cursor: pointer;
-}
-
-.closer:hover {
-font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif !important;
-}*/
-.arc {
-	fill-opacity: .6;
-}
-
-.arc path {
-	stroke: #fff;
-}
-
-.arc path:hover {
-	cursor: pointer;
-}
-
-.arc:hover {
-	cursor: pointer;
-	fill-opacity: .8;
 }
 
 /* Data container */
@@ -326,18 +258,16 @@ font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif !important;
 	float: right;
 	height: auto;
 	line-height: 2rem;
-	min-height: 5rem;
+	margin: 1rem 0;
+	min-height: 7rem;
 	padding-right: 1rem;
 	text-align: right;
 	vertical-align: bottom;
-	width: 40%;
+	width: 50%;
 }
 
 #totalDiv h2 {
 	font-size: 1.25rem;
-}
-
-#totalDiv h4 {
 }
 
 #totalDiv h5 {
@@ -364,7 +294,7 @@ font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif !important;
 }
 
 .box.small {
-	font-size: 0.85rem;	/*line-height: 1.25rem;*/
+	font-size: 0.85rem;
 	margin-bottom: 0.5rem;
 	padding: 0.15rem;
 }
@@ -389,120 +319,89 @@ font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif !important;
 	font-weight: 900;
 }
 
-/*Repeater*/
-#repeater, #fastforward, #rewind {
-	cursor: pointer;
-	stroke: #fff;
-	stroke-linejoin: round;
-	stroke-linecap: round;
-	stroke-width: 1px;
-}
-
 /*Responsive*/
-@media (max-width:900px) {
-	#master_container {
-		padding-bottom: 58% !important;
+@media (max-width:930px) {
+	#pre_content h2 {
+		line-height: 2.3rem;
 	}
 
-	s
-	#totalDiv, #legend-content {
-		width: 100%;
+	#pre_content h3 {
+		line-height: 1.75rem;
 	}
 
-}
-
-@media (max-width: 870px;
-
-) {
-
-	/*#fold img {
-		bottom: -35px;
-	}*/
-}
-
-@media (max-width:800px) {
-	#master_container {
-		padding-bottom: 65% !important;
+	#master_title {
+		max-width: calc(80% - 2rem);
+		width: calc(50% - 2rem);
 	}
 
 }
 
-@media (max-width:700px) {
-	#master_container {
-		padding-bottom: 65% !important;
+@media (max-width:750px) {
+	#pre_content {
+		margin-bottom: 0;
+	}
+
+	#legend-content, #totalDiv {
+		margin: 0;
+		max-width: 750px;
+		width: calc(100% - 2rem);
+	}
+
+	#master_title {
+		max-width: calc(90% - 2rem);
+		width: calc(60% - 2rem);
+	}
+
+}
+
+@media (max-width:680px) {
+	#master_title {
+		max-width: calc(80% - 2rem);
+		width: calc(100% - 2rem);
 	}
 
 }
 
 @media (max-width:570px) {
-	#totalDiv h3 {
-		font-size: 15px;
-		line-height: 100%;
-	}
-
-	#totalDiv h2 {
-		font-size: 1rem;
-		line-height: 100%;
-	}
-
-	#totalDiv h4 {
-		font-size: .75rem;
-		line-height: 4px;
-	}
-
-	#pre_content h2 {
-		font-size: 1.25rem;
-		padding-top: 5px;
-		padding-left: 5px;
-		line-height: 20px;
-	}
-
-	#post_content {
-		width: 90%;
-	}
-
-	#fold img {
-		display: none;
-	}
-
-}
-
-@media (max-width:480px) {
-	#totalDiv {
-		height: 40px;
-	}
-
-	#master_container {
-		padding-bottom: 70% !important;
-	}
-
-}
-
-@media (max-width:400px) {
 	.my-legend .legend-title {
-		font-size: .75rem;
-		padding-top: 5px;
-		padding-left: 6px;
-	}
-
-	.my-legend .legend-scale ul {
-		padding-left: 5px;
+		font-family: "Avenir LT W02 35 Medium", verdana, sans-serif;
+		font-size: 1.15rem;
 	}
 
 	.my-legend .legend-scale ul li {
-		width: 40px;
-		font-size: .8125rem;
-		padding-top: 3px;
-		padding-bottom: 3px;
+		font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif;
+		font-size: 1.15rem;
+		padding: 1rem 0;
+		width: 80px;
 	}
 
 	.my-legend .legend-scale ul li img {
-		padding-top: 4px;
-		height: 16px;
+		padding: 0;
+		height: 30px;
+		width: 30px;
+	}
+
+	.my-legend a {
+		color: #777;
 	}
 
 	.buttonsi {
-		padding: 0 !important;
+		padding: 0.55rem 0 !important;
+	}
+
+	#post_content p {
+		margin-right: 4rem;
+	}
+
+}
+
+@media (max-width:420px) {
+	#post_content p {
+		margin-right: 1rem;
+	}
+
+	#fold {
+		display: none;
 	}
 
 }
