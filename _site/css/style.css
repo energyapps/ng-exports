@@ -342,6 +342,13 @@ Map
 
 }
 
+@media(max-width:830px) {
+	#legend-content {
+		width: 45%;
+	}
+
+}
+
 @media (max-width:750px) {
 	#pre_content {
 		margin-bottom: 0;
