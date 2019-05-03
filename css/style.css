@@ -149,19 +149,25 @@ Map
 }
 
 .country {
-	fill: #fff;     /*country colour */
-	stroke: #333;    /* country border colour */
+	fill: white;     /* default country color */
+	stroke: #333;    /* country border color */
 	stroke-width: 1;    /* country border width */
 }
 
 .countryLabel {
-	display: none;     /*hide all country labels by default */
+	display: none;     /* hide all country labels by default */
 }
 
 .countryName {
-	fill: white;	/*country label text colour*/
+	fill: white;	/* country label text color */
+	font-family: "Avenir LT W02 85 Heavy", verdana, sans-serif;
 	height: 100%;
 	width: 100%;
+}
+
+.labelBg {
+	stroke: white; /* add stroke to background rectangle */
+	stroke-width: 1;
 }
 
 /******************************** LEGEND ********************************/
@@ -198,9 +204,9 @@ Map
 
 .my-legend .legend-scale ul li {
 	background-color: #F2F2F2;
-	border-top: 1px solid #fff;
-	border-bottom: 1px solid #fff;
-	border-left: 1px solid #fff;
+	border-top: 1px solid white;
+	border-bottom: 1px solid white;
+	border-left: 1px solid white;
 	color: #444;
 	cursor: pointer;
 	display: block;
@@ -223,7 +229,7 @@ Map
 }
 
 .my-legend .legend-scale ul li:last-child {
-	border-right: 1px solid #fff;
+	border-right: 1px solid white;
 }
 
 .my-legend ul.legend-labels li span {

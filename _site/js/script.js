@@ -45,10 +45,11 @@ var minZoom,
 // variable for color scale
 var colors = d3.scaleOrdinal()
 	.domain( [ "country", "country-on", "labels" ] )
-	.range( [ "#FFFFFF", "#8BCC00", "#12769e" ] );
+	.range( [ "#FFFFFF", "#19A9E2", "#8BCC00" ] );
 
 // DOE Green #8BCC00 / rgb(139,204,0)
 // DOE Light Blue 226 #19A9E2 / rgb(25,169,226)
+// DOE Dark Blue #12769e
 // DOE Pink #E7227E
 // Map Water Blue #e6ebed
 // Tomato #FF6347
@@ -359,9 +360,36 @@ var svg = d3
 	.attr( "id", "map" )
 	// set to the same size as the "map-holder" div
 	.attr( "width", $( "#map_container" ).width() )
-	.attr( "height", $( "#map_container" ).height() )
-	// add zoom functionality
-	// .call( zoom );
+	.attr( "height", $( "#map_container" ).height() );
+// add zoom functionality
+// .call( zoom );
+
+// add definitions to SVG
+var defs = svg.append( "defs" );
+
+// add drop shadow filter
+var dropShadow = defs.append( "filter" )
+	.attr( "id", "shadow" )
+	.attr( "x", "0" )
+	.attr( "y", "0" )
+	.attr( "width", "105%" )
+	.attr( "height", "115%" );
+
+dropShadow.append( "feOffset" )
+	.attr( "result", "offOut" )
+	.attr( "in", "SourceAlpha" )
+	.attr( "dx", "0.5rem" )
+	.attr( "dy", "2.5rem" );
+
+dropShadow.append( "feGaussianBlur" )
+	.attr( "result", "blurOut" )
+	.attr( "in", "offOut" )
+	.attr( "stdDeviation", "2" );
+
+dropShadow.append( "feBlend" )
+	.attr( "in", "SourceGraphic" )
+	.attr( "in2", "blurOut" )
+	.attr( "mode", "normal" );
 
 // get map data
 var topoUrl = "data/world-topo.json"; // full world map
@@ -446,6 +474,7 @@ function drawMap( error, topology, expCountries ) {
 	// add a background rectangle the same size as the text
 	var nameBg = names.append( "rect" )
 		.attr( "class", "labelBg" )
+		.attr( "filter", "url(#shadow)" )
 		.style( "fill", function( d ) {
 			return colors( "labels" );
 		} );
@@ -497,7 +526,7 @@ function drawMap( error, topology, expCountries ) {
 						return d.bbox.height + 6;
 					} )
 					.attr( "x", -5 )
-					.attr( "y", -6 );
+					.attr( "y", -8 );
 
 				name.attr( "x", function( d ) {
 						return d.bbox.width / 2;
