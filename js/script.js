@@ -18,7 +18,7 @@ var mapTitle = d3
 
 // variables for min/max years
 var minYr = 2015,
-	maxYr = 2018;
+	maxYr = 2019;
 
 // variables for range of years
 var years,
@@ -180,6 +180,8 @@ function changeColor( thisYr ) {
 	var yrCountries = yearsArray[ thisYr ], // list of countries in current year
 		currentTotal = yrCountries.length; // sum of all countries in current year
 
+	// console.log( thisYr + "::" + currentTotal + "----->" + yrCountries );
+
 	totalDiv.innerHTML = '<h2>U.S. natural gas exports in <span class="blueText">' + thisYr + '</span></h2><h4>Distributed to <span id="total" class="box">' + currentTotal + '</span> total countries</h4><h5 id="diff"></h5>';
 
 	if ( prevYr >= minYr ) {
@@ -192,7 +194,7 @@ function changeColor( thisYr ) {
 			$( '#total' ).removeClass( 'redBox' );
 			$( '#total' ).addClass( 'greenBox' );
 		} else if ( change < 0 ) {
-			$( '#diff' ).html( '<span id="change" class="blueText">' + change + '</span> lmore countries than the previous year' );
+			$( '#diff' ).html( '<span id="change" class="blueText">' + change + '</span> less countries than the previous year' );
 			$( '#total' ).removeClass( 'greenBox' );
 			$( '#total' ).addClass( 'redBox' );
 		} else {

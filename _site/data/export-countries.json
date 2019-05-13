@@ -11,42 +11,47 @@
 	},
 	"BHS": {
 		"countryName": "Bahamas",
-		"lngYear": "2018, 2017",
+		"lngYear": "2019, 2018, 2017",
 		"notes": ""
 	},
 	"BRB": {
 		"countryName": "Barbados",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
+		"notes": ""
+	},
+	"BEL": {
+		"countryName": "Belgium",
+		"lngYear": "2019",
 		"notes": ""
 	},
 	"BRA": {
 		"countryName": "Brazil",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"CAN": {
 		"countryName": "Canada",
-		"lngYear": "2018, 2017, 2016, 2015, 2014, 2013",
+		"lngYear": "2019, 2018, 2017, 2016, 2015, 2014, 2013",
 		"notes": "U.S. natural gas is exported to Canada as liquefied natural gas (LNG) via pipelines and by truck and also as compressed natural gas (CNG) in high-pressure containers."
 	},
 	"CHL": {
 		"countryName": "Chile",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"CHN": {
 		"countryName": "China",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"COL": {
 		"countryName": "Colombia",
-		"lngYear": "2018",
+		"lngYear": "2019, 2018",
 		"notes": ""
 	},
 	"DOM": {
 		"countryName": "Dominican Republic",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"EGY": {
@@ -56,17 +61,17 @@
 	},
 	"FRA": {
 		"countryName": "France",
-		"lngYear": "2018",
+		"lngYear": "2019, 2018",
 		"notes": ""
 	},
 	"GRC": {
 		"countryName": "Greece",
-		"lngYear": "2018",
+		"lngYear": "2019, 2018",
 		"notes": ""
 	},
 	"IND": {
 		"countryName": "India",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"ISR": {
@@ -76,7 +81,7 @@
 	},
 	"ITA": {
 		"countryName": "Italy",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"JAM": {
@@ -86,17 +91,17 @@
 	},
 	"JPN": {
 		"countryName": "Japan",
-		"lngYear": "2018, 2017, 2016, 2015, 2014",
+		"lngYear": "2019, 2018, 2017, 2016, 2015, 2014",
 		"notes": ""
 	},
 	"JOR": {
 		"countryName": "Jordan",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"KOR": {
 		"countryName": "South Korea",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"KWT": {
@@ -116,42 +121,42 @@
 	},
 	"MEX": {
 		"countryName": "Mexico",
-		"lngYear": "2018, 2017, 2016, 2015, 2014, 2013",
+		"lngYear": "2019, 2018, 2017, 2016, 2015, 2014, 2013",
 		"notes": "U.S. liquefied natural gas (LNG) is exported to Mexico via pipelines as well as by both vessel and truck."
 	},
 	"NLD": {
 		"countryName": "Netherlands",
-		"lngYear": "2018, 2017",
+		"lngYear": "2019, 2018, 2017",
 		"notes": ""
 	},
 	"PAK": {
 		"countryName": "Pakistan",
-		"lngYear": "2018, 2017",
+		"lngYear": "2019, 2018, 2017",
 		"notes": ""
 	},
 	"PAN": {
 		"countryName": "Panama",
-		"lngYear": "2018",
+		"lngYear": "2019, 2018",
 		"notes": ""
 	},
 	"POL": {
 		"countryName": "Poland",
-		"lngYear": "2018, 2017",
+		"lngYear": "2019, 2018, 2017",
 		"notes": ""
 	},
 	"PRT": {
 		"countryName": "Portugal",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"SGP": {
 		"countryName": "Singapore",
-		"lngYear": "2018",
+		"lngYear": "2019, 2018",
 		"notes": ""
 	},
 	"ESP": {
 		"countryName": "Spain",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"TWN": {
@@ -166,12 +171,12 @@
 	},
 	"TUR": {
 		"countryName": "Turkey",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"GBR": {
 		"countryName": "United Kingdom",
-		"lngYear": "2018, 2017",
+		"lngYear": "2019, 2018, 2017",
 		"notes": ""
 	}
 }
