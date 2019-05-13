@@ -1,12 +1,12 @@
 {
 	"ARE": {
 		"countryName": "United Arab Emirates",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"ARG": {
 		"countryName": "Argentina",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"BHS": {
@@ -28,11 +28,6 @@
 		"countryName": "Brazil",
 		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
-	},
-	"CAN": {
-		"countryName": "Canada",
-		"lngYear": "2019, 2018, 2017, 2016, 2015, 2014, 2013",
-		"notes": "U.S. natural gas is exported to Canada as liquefied natural gas (LNG) via pipelines and by truck and also as compressed natural gas (CNG) in high-pressure containers."
 	},
 	"CHL": {
 		"countryName": "Chile",
@@ -56,7 +51,7 @@
 	},
 	"EGY": {
 		"countryName": "Egypt",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"FRA": {
@@ -76,7 +71,7 @@
 	},
 	"ISR": {
 		"countryName": "Israel",
-		"lngYear": "2018",
+		"lngYear": "2019, 2018",
 		"notes": ""
 	},
 	"ITA": {
@@ -86,7 +81,7 @@
 	},
 	"JAM": {
 		"countryName": "Jamaica",
-		"lngYear": "2018",
+		"lngYear": "2019, 2018",
 		"notes": ""
 	},
 	"JPN": {
@@ -106,17 +101,17 @@
 	},
 	"KWT": {
 		"countryName": "Kuwait",
-		"lngYear": "2018, 2017, 2016",
+		"lngYear": "2019, 2018, 2017, 2016",
 		"notes": ""
 	},
 	"LTU": {
 		"countryName": "Lithuania",
-		"lngYear": "2017",
+		"lngYear": "2019, 2018, 2017",
 		"notes": ""
 	},
 	"MLT": {
 		"countryName": "Malta",
-		"lngYear": "2018, 2017",
+		"lngYear": "2019, 2018, 2017",
 		"notes": ""
 	},
 	"MEX": {
@@ -161,12 +156,12 @@
 	},
 	"TWN": {
 		"countryName": "Taiwan",
-		"lngYear": "2018, 2017, 2015",
+		"lngYear": "2019, 2018, 2017, 2016, 2015",
 		"notes": ""
 	},
 	"THA": {
 		"countryName": "Thailand",
-		"lngYear": "2017",
+		"lngYear": "2019, 2018, 2017",
 		"notes": ""
 	},
 	"TUR": {
