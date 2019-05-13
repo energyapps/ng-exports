@@ -80,7 +80,7 @@ Map
 #pre_content h3 {
 	font-family: "Avenir LT W02 35 Medium", verdana, sans-serif;
 	font-size: 1.25rem;
-	line-height: 1.25rem;
+	line-height: 1.75rem;
 	margin-bottom: 0.5rem;
 	padding: 0.25rem 0.5rem 0;
 	text-transform: none;
@@ -332,7 +332,8 @@ Map
 	}
 
 	#pre_content h3 {
-		line-height: 1.75rem;
+
+		/*line-height: 1.75rem;*/
 	}
 
 	#master_title {
