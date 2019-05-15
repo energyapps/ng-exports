@@ -14,11 +14,14 @@ var masterW = parseInt( d3.select( "#master_container" ).style( "width" ) ),
 var mapTitle = d3
 	.select( ".title" )
 	.attr( "class", "title" )
-	.text( "Countries receiving U.S. natural gas exports" );
+	.text( "Countries receiving U.S. LNG exports" );
 
 // variables for min/max years
-var minYr = 2015,
+var minYr = 2016, // 2015 exports only reflect re-exports and should not be included per FE
 	maxYr = 2019;
+
+var benchYr = 2015, // for comparing total countries to previous administration
+	benchTotal = 0; // previous total export countries is zero for U.S. LNG per FE
 
 // variables for range of years
 var years,
@@ -180,15 +183,21 @@ function changeColor( thisYr ) {
 	var yrCountries = yearsArray[ thisYr ], // list of countries in current year
 		currentTotal = yrCountries.length; // sum of all countries in current year
 
-	// console.log( thisYr + "::" + currentTotal + "----->" + yrCountries );
-
 	totalDiv.innerHTML = '<h2>U.S. natural gas exports in <span class="blueText">' + thisYr + '</span></h2><h4>Distributed to <span id="total" class="box">' + currentTotal + '</span> total countries</h4><h5 id="diff"></h5>';
 
-	if ( prevYr >= minYr ) {
-		prevCountries = yearsArray[ prevYr ]; // list countries in previous year
-		prevTotal = prevCountries.length; // sum of all countries in previous year
+	// Compare totals in current year if greater than bench year
+	if ( thisYr >= benchYr ) {
+		// sum of countries in previous year
+		if ( thisYr == benchYr + 1 ) { // if the bench year is the previous year
+			prevTotal = benchTotal; // set previous total to bench total
+		} else {
+			prevCountries = yearsArray[ prevYr ]; // reference list for previous year
+			prevTotal = prevCountries.length; // sum of all countries in previous year
+		}
+
 		change = currentTotal - prevTotal; // change in total from prev year
 
+		// output numbers and style based on rate of change
 		if ( change > 0 ) {
 			$( '#diff' ).html( '<span id="change" class="blueText">' + change + '</span> more countries than the previous year' );
 			$( '#total' ).removeClass( 'redBox' );
