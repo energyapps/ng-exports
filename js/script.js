@@ -183,7 +183,7 @@ function changeColor( thisYr ) {
 	var yrCountries = yearsArray[ thisYr ], // list of countries in current year
 		currentTotal = yrCountries.length; // sum of all countries in current year
 
-	totalDiv.innerHTML = '<h2>U.S. natural gas exports in <span class="blueText">' + thisYr + '</span></h2><h4>Distributed to <span id="total" class="box">' + currentTotal + '</span> total countries</h4><h5 id="diff"></h5>';
+	totalDiv.innerHTML = '<h2>U.S. LNG exports in <span class="blueText">' + thisYr + '</span></h2><h4>Distributed to <span id="total" class="box">' + currentTotal + '</span> total countries</h4><h5 id="diff"></h5>';
 
 	// Compare totals in current year if greater than bench year
 	if ( thisYr >= benchYr ) {
